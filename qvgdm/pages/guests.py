@@ -1,20 +1,12 @@
-from dataclasses import dataclass
-
+import time
 import dash
 import dash_mantine_components as dmc
 import flask
-from dash import Input, Output, callback
+from dash import Input, Output, callback, no_update
+
+from qvgdm.players import Player, players
 
 dash.register_page(__name__, path="/")
-
-
-@dataclass
-class Player:
-    id: str
-    score: int
-
-
-players: dict[str, Player] = {}
 
 
 layout = [
@@ -49,6 +41,7 @@ layout = [
 @callback(
     Output("guest_layout_logged_out", "display"),
     Output("guest_layout_logged_in", "display"),
+    Output("guest_connection_trigger", "data"),
     Input("guest_join_button", "n_clicks"),
 )
 def guest_join(n: int | None):
@@ -56,9 +49,12 @@ def guest_join(n: int | None):
 
     if not n:
         if player_id in players:
-            return "none", "block"
+            # guest player already connected
+            return "none", "block", no_update
 
-        return "block", "none"
+        # new connection, main page
+        return "block", "none", no_update
 
+    # new connection success
     players[player_id] = Player(player_id, 0)
-    return "none", "block"
+    return "none", "block", time.time()

@@ -19,7 +19,9 @@ app.layout = dmc.MantineProvider(
                                 html.Img(src="/assets/logo.png", height=250, width=250)
                             ),
                             dmc.Text(
-                                "Qui veut gagner des mozzas", size="40px", c="white"
+                                "Qui veut gagner des mozzas",
+                                size="40px",  # pyright: ignore[reportArgumentType]
+                                c="white",  # pyright: ignore[reportArgumentType]
                             ),
                             dash.page_container,
                         ],
@@ -29,7 +31,6 @@ app.layout = dmc.MantineProvider(
                 src="/assets/background.jpg",
                 styles={"root": {"height": "100%"}},
             ),
-            dcc.Store(id="guest_connection_trigger", data=0),
             dcc.Store(id="player_connection_trigger", data=0),
         ],
         style={"height": "100vh", "width": "100vw"},

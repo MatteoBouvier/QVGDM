@@ -1,6 +1,16 @@
 import dash
 import dash_mantine_components as dmc
-from dash import ALL, Input, Output, State, callback, callback_context, html, no_update
+from dash import (
+    ALL,
+    Input,
+    Output,
+    State,
+    callback,
+    callback_context,
+    html,
+    no_update,
+    dcc,
+)
 from dash.exceptions import PreventUpdate
 
 from qvgdm.players import players
@@ -52,6 +62,7 @@ layout = [
             ]
         )
     ),
+    dcc.Interval(id="presenter_check_connected_guests", interval=1000),
 ]
 
 
@@ -118,8 +129,8 @@ def presenter_update_guest_counter(_):
 
 
 @callback(
-    Output("presenter_guest_counter", "chilren"),
-    Input("guest_connection_trigger", "data"),
+    Output("presenter_guest_counter", "children"),
+    Input("presenter_check_connected_guests", "n_intervals"),
 )
 def presenter_update_guest_counter(_):
     return len(players)

@@ -8,6 +8,8 @@ app = dash.Dash(
     use_pages=True,
 )
 
+app.player = None
+
 app.layout = dmc.MantineProvider(
     html.Div(
         [
@@ -32,6 +34,7 @@ app.layout = dmc.MantineProvider(
                 styles={"root": {"height": "100%"}},
             ),
             dcc.Store(id="player_connection_trigger", data=0),
+            dcc.Location(id="url"),
         ],
         style={"height": "100vh", "width": "100vw"},
     )

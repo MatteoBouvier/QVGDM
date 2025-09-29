@@ -7,13 +7,14 @@ from dash import (
     State,
     callback,
     callback_context,
+    dcc,
+    get_app,
     html,
     no_update,
-    dcc,
 )
 from dash.exceptions import PreventUpdate
 
-from qvgdm.players import players
+from qvgdm.players import guests
 from qvgdm.questions import load_questions
 
 dash.register_page(__name__)
@@ -62,7 +63,7 @@ layout = [
             ]
         )
     ),
-    dcc.Interval(id="presenter_check_connected_guests", interval=1000),
+    dcc.Interval(id="presenter_check_connected_players", interval=1000),
 ]
 
 
@@ -121,19 +122,14 @@ def show_question(index: int) -> dmc.Stack:
 
 
 @callback(
-    Output("presenter_player_status", "chilren"),
-    Input("player_connection_trigger", "data"),
-)
-def presenter_update_guest_counter(_):
-    return "Non"  # TODO:
-
-
-@callback(
+    Output("presenter_player_status", "children"),
     Output("presenter_guest_counter", "children"),
-    Input("presenter_check_connected_guests", "n_intervals"),
+    Input("presenter_check_connected_players", "n_intervals"),
 )
 def presenter_update_guest_counter(_):
-    return len(players)
+    print(get_app().player is None)
+    status = "Non" if get_app().player is None else "Oui"
+    return status, len(guests)
 
 
 @callback(

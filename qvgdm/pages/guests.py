@@ -3,7 +3,7 @@ import dash_mantine_components as dmc
 import flask
 from dash import Input, Output, callback
 
-from qvgdm.players import Player, players
+from qvgdm.players import Player, guests
 
 dash.register_page(__name__, path="/")
 
@@ -46,7 +46,7 @@ def guest_join(n: int | None):
     player_id = flask.request.origin
 
     if not n:
-        if player_id in players:
+        if player_id in guests:
             # guest player already connected
             return "none", "block"
 
@@ -54,5 +54,5 @@ def guest_join(n: int | None):
         return "block", "none"
 
     # new connection success
-    players[player_id] = Player(player_id, 0)
+    guests[player_id] = Player(player_id, 0)
     return "none", "block"

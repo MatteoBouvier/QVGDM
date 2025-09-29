@@ -7,4 +7,4 @@ class Player:
     score: int
 
 
-players: dict[str, Player] = {}
+guests: dict[str, Player] = {}

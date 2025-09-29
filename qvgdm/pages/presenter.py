@@ -127,7 +127,6 @@ def show_question(index: int) -> dmc.Stack:
     Input("presenter_check_connected_players", "n_intervals"),
 )
 def presenter_update_guest_counter(_):
-    print(get_app().player is None)
     status = "Non" if get_app().player is None else "Oui"
     return status, len(guests)
 

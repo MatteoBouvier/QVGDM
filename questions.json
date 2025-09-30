@@ -10,6 +10,17 @@
             ],
             "answer": "réponse C",
             "value": 1
+        },
+        {
+            "question": "question #2",
+            "options": [
+                "réponse A",
+                "réponse B",
+                "réponse C",
+                "réponse D"
+            ],
+            "answer": "réponse A",
+            "value": 2
         }
     ]
 }

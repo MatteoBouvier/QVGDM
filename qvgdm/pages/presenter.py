@@ -14,13 +14,11 @@ from dash import (
 )
 from dash.exceptions import PreventUpdate
 
+from qvgdm.game import get_game
 from qvgdm.players import guests
-from qvgdm.questions import load_questions
+from qvgdm.questions import Question
 
 dash.register_page(__name__)
-
-questions = load_questions()
-current_question = 0
 
 layout = [
     dmc.Space(h=100),
@@ -67,9 +65,7 @@ layout = [
 ]
 
 
-def show_question(index: int) -> dmc.Stack:
-    question = questions[index]
-
+def show_question(question: Question) -> dmc.Stack:
     return dmc.Stack(
         [
             dmc.Text(question["question"], size="xl", c="white"),  # pyright: ignore[reportArgumentType]
@@ -127,7 +123,7 @@ def show_question(index: int) -> dmc.Stack:
     Input("presenter_check_connected_players", "n_intervals"),
 )
 def presenter_update_guest_counter(_):
-    status = "Non" if get_app().player is None else "Oui"
+    status = "Non" if get_game().player is None else "Oui"
     return status, len(guests)
 
 
@@ -141,11 +137,9 @@ def presenter_start(n: int | None):
     if not n:
         return "block", None
 
-    global current_question
+    question = get_game().start()
 
-    current_question = 0
-
-    return "none", show_question(current_question)
+    return "none", show_question(question)
 
 
 @callback(
@@ -155,15 +149,22 @@ def presenter_start(n: int | None):
     State({"type": "presenter_question", "index": ALL}, "variant"),
 )
 def presenter_select_answer(n: list[int | None], button_variants: list[str]):
+    if not any(n):
+        raise PreventUpdate
+
     if not callback_context.triggered_id:
         return [], "none"
 
     index = callback_context.triggered_id["index"]
+    game = get_game()
 
     if button_variants[index] == "filled":
+        game.validate_answer()
         return [no_update] * 4, "block"
 
     else:
+        game.select_answer(index)
+
         variants = ["outline"] * 4
         variants[index] = "filled"
 
@@ -179,12 +180,11 @@ def presenter_next_question(n: int | None):
     if not n:
         raise PreventUpdate
 
-    global current_question
-    current_question += 1
+    question = get_game().next_question()
 
-    if current_question == len(questions):
+    if question is None:
         # TODO:
         print("fin")
+        return
 
-    else:
-        return show_question(current_question)
+    return show_question(question)

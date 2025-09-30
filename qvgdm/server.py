@@ -1,14 +1,17 @@
 import dash
 import dash_mantine_components as dmc
-from dash import html, dcc
+from dash import dcc, html
+
+from qvgdm.game import Game
 
 app = dash.Dash(
     "qvgdm",
     title="Qui veut gagner des mozzas ?",
+    update_title="",
     use_pages=True,
 )
 
-app.player = None
+app.game = Game()  # pyright: ignore[reportAttributeAccessIssue]
 
 app.layout = dmc.MantineProvider(
     html.Div(
@@ -20,10 +23,12 @@ app.layout = dmc.MantineProvider(
                             dmc.Center(
                                 html.Img(src="/assets/logo.png", height=250, width=250)
                             ),
-                            dmc.Text(
-                                "Qui veut gagner des mozzas",
-                                size="40px",  # pyright: ignore[reportArgumentType]
-                                c="white",  # pyright: ignore[reportArgumentType]
+                            dmc.Center(
+                                dmc.Text(
+                                    "Qui veut gagner des mozzas",
+                                    size="40px",  # pyright: ignore[reportArgumentType]
+                                    c="white",  # pyright: ignore[reportArgumentType]
+                                )
                             ),
                             dash.page_container,
                         ],

@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+import random
+
 from dash import get_app
 
 from qvgdm.players import Player
@@ -9,6 +11,15 @@ from qvgdm.questions import Question, load_questions
 class ScoreItem:
     value: int
     validated: bool
+
+
+@dataclass
+class Jokers:
+    half: bool = True
+    call: bool = True
+    public: bool = True
+
+    invalid_options: list[int] | None = None
 
 
 class Game:
@@ -25,6 +36,8 @@ class Game:
             for idx, question in enumerate(self.questions)
         }
 
+        self.jokers: Jokers = Jokers()
+
     def start(self) -> Question | None:
         self.started = True
         self.current_index = -1
@@ -38,7 +51,7 @@ class Game:
     def get_question(self) -> Question:
         return self.questions[self.current_index]
 
-    def get_answer(self) -> int:
+    def get_answer_index(self) -> int:
         question = self.get_question()
         return question["options"].index(question["answer"])
 
@@ -59,10 +72,31 @@ class Game:
         self.current_selected = None
         self.current_validated = False
 
+        self.jokers.invalid_options = None
+
         if self.current_index >= len(self.questions):
             return None
 
         return self.questions[self.current_index]
+
+    def use_joker_half(self) -> list[int]:
+        assert self.jokers.half
+        self.jokers.half = False
+
+        answer_index = self.get_answer_index()
+        invalid_options = random.sample([i for i in range(4) if i != answer_index], 2)
+
+        self.jokers.invalid_options = invalid_options
+
+        return invalid_options
+
+    def use_joker_call(self) -> None:
+        assert self.jokers.call
+        self.jokers.call = False
+
+    def use_joker_public(self) -> None:
+        assert self.jokers.public
+        self.jokers.public = False
 
 
 def get_game() -> Game:

@@ -8,11 +8,11 @@ from dash import (
     callback,
     callback_context,
     dcc,
-    get_app,
     html,
     no_update,
 )
 from dash.exceptions import PreventUpdate
+from dash_iconify import DashIconify
 
 from qvgdm.game import get_game
 from qvgdm.players import guests
@@ -49,6 +49,27 @@ layout = [
                 ),
                 dmc.Space(h=20),
                 dmc.Stack(
+                    [
+                        dmc.Button(
+                            "50/50",
+                            leftSection=DashIconify(icon="mdi:fraction-one-half"),
+                            id="presenter_joker_half",
+                        ),
+                        dmc.Button(
+                            "Phone",
+                            leftSection=DashIconify(icon="mdi:phone"),
+                            id="presenter_joker_call",
+                        ),
+                        dmc.Button(
+                            "Public",
+                            leftSection=DashIconify(icon="mdi:people"),
+                            id="presenter_joker_public",
+                        ),
+                    ],
+                    id="presenter_controls",
+                    display="none",
+                ),
+                dmc.Stack(
                     dmc.Button(
                         "Commencer nouvelle partie", id="presenter_start_button"
                     ),
@@ -56,8 +77,12 @@ layout = [
                 ),
                 html.Div(id="presenter_question_container"),
                 dmc.Button(
-                    "Question suivante", id="presenter_next_question", display="none"
+                    "Question suivante",
+                    leftSection=DashIconify(icon="mdi:navigate-next"),
+                    id="presenter_next_question",
+                    display="none",
                 ),
+                dmc.Space(h=20),
             ]
         )
     ),
@@ -129,17 +154,19 @@ def presenter_update_guest_counter(_):
 
 @callback(
     Output("presenter_start_button_stack", "display"),
+    Output("presenter_controls", "display"),
     Output("presenter_question_container", "children", allow_duplicate=True),
     Input("presenter_start_button", "n_clicks"),
     prevent_initial_call=True,
 )
 def presenter_start(n: int | None):
     if not n:
-        return "block", None
+        return "block", "none", None
 
     question = get_game().start()
+    assert question is not None
 
-    return "none", show_question(question)
+    return "none", "flex", show_question(question)
 
 
 @callback(
@@ -160,7 +187,7 @@ def presenter_select_answer(n: list[int | None], button_variants: list[str]):
 
     if button_variants[index] == "filled":
         game.validate_answer()
-        return [no_update] * 4, "block"
+        return [no_update] * 4, "flex"
 
     else:
         game.select_answer(index)
@@ -188,3 +215,40 @@ def presenter_next_question(n: int | None):
         return
 
     return show_question(question)
+
+
+@callback(
+    Output("presenter_joker_half", "disabled"),
+    Output({"type": "presenter_question", "index": ALL}, "disabled"),
+    Input("presenter_joker_half", "n_clicks"),
+)
+def presenter_use_joker_half(n: int | None):
+    if not n:
+        raise PreventUpdate
+
+    invalid_options_indices = get_game().use_joker_half()
+    return True, [True if i in invalid_options_indices else False for i in range(4)]
+
+
+@callback(
+    Output("presenter_joker_call", "disabled"),
+    Input("presenter_joker_call", "n_clicks"),
+)
+def presenter_use_joker_call(n: int | None):
+    if not n:
+        raise PreventUpdate
+
+    get_game().use_joker_call()
+    return True
+
+
+@callback(
+    Output("presenter_joker_public", "disabled"),
+    Input("presenter_joker_public", "n_clicks"),
+)
+def presenter_use_joker_public(n: int | None):
+    if not n:
+        raise PreventUpdate
+
+    get_game().use_joker_public()
+    return True

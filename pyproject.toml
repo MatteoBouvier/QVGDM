@@ -6,5 +6,12 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "dash>=3.2.0",
+    "dash-iconify>=0.1.2",
     "dash-mantine-components>=2.3.0",
 ]
+
+[tool.pyright]
+reportAny = false
+reportMissingTypeStubs = false
+reportUnknownVariableType = false
+reportUnknownMemberType = false

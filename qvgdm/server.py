@@ -21,7 +21,15 @@ app.layout = dmc.MantineProvider(
                     dmc.Stack(
                         [
                             dmc.Center(
-                                html.Img(src="/assets/logo.png", height=250, width=250)
+                                [
+                                    html.Div(
+                                        id="public_joker_result",
+                                        style={"width": "400px"},
+                                    ),
+                                    html.Img(
+                                        src="/assets/logo.png", height=250, width=250
+                                    ),
+                                ]
                             ),
                             dmc.Center(
                                 dmc.Text(
@@ -38,7 +46,6 @@ app.layout = dmc.MantineProvider(
                 src="/assets/background.jpg",
                 styles={"root": {"height": "100%"}},
             ),
-            dcc.Store(id="player_connection_trigger", data=0),
             dcc.Location(id="url"),
         ],
         style={"height": "100vh", "width": "100vw"},

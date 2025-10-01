@@ -113,9 +113,20 @@ class Game:
         assert self.jokers.call
         self.jokers.call = False
 
-    def use_joker_public(self) -> None:
+    def use_joker_public(self) -> list[int]:
         assert self.jokers.public
         self.jokers.public = False
+
+        # TODO: add timer
+
+        answers = [0, 0, 0, 0]
+        for guest in self.guests.values():
+            guest_ans = guest.answers.get(self.current_index)
+            if guest_ans is not None:
+                answers[guest_ans] += 1
+
+        total_answers = sum(answers)
+        return [int(nb / total_answers * 100) for nb in answers]
 
 
 def get_game() -> Game:

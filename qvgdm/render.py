@@ -18,7 +18,18 @@ def show_question(
             dmc.Stack(
                 [
                     dmc.Center(
-                        dmc.Text(question["question"], c="white", size="50px"),  # pyright: ignore[reportArgumentType]
+                        dmc.BackgroundImage(
+                            dmc.Center(
+                                dmc.Text(
+                                    question["question"],
+                                    c="white",  # pyright: ignore[reportArgumentType]
+                                    size="30px",  # pyright: ignore[reportArgumentType]
+                                ),
+                                style={"height": "100%"},
+                            ),
+                            src="/assets/images/question_main.svg",
+                            style={"width": "1083px", "height": "118px"},
+                        )
                     ),
                     dmc.Space(h=10),
                     dmc.Group(
@@ -32,7 +43,7 @@ def show_question(
                                     style={"height": "100%"},
                                 ),
                                 src=f"/assets/images/{_get_asset('left', selected == 0, answer == 0)}",
-                                style={"height": "50px"},
+                                style={"width": "552px", "height": "64px"},
                             ),
                             dmc.BackgroundImage(
                                 dmc.Center(
@@ -43,7 +54,7 @@ def show_question(
                                     style={"height": "100%"},
                                 ),
                                 src=f"/assets/images/{_get_asset('right', selected == 1, answer == 1)}",
-                                style={"height": "50px"},
+                                style={"width": "552px", "height": "64px"},
                             ),
                         ],
                         grow=True,
@@ -62,7 +73,7 @@ def show_question(
                                     style={"height": "100%"},
                                 ),
                                 src=f"/assets/images/{_get_asset('left', selected == 2, answer == 2)}",
-                                style={"height": "50px"},
+                                style={"width": "552px", "height": "64px"},
                             ),
                             dmc.BackgroundImage(
                                 dmc.Center(
@@ -73,7 +84,7 @@ def show_question(
                                     style={"height": "100%"},
                                 ),
                                 src=f"/assets/images/{_get_asset('right', selected == 3, answer == 3)}",
-                                style={"height": "50px"},
+                                style={"width": "552px", "height": "64px"},
                             ),
                         ],
                         grow=True,

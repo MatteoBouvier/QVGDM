@@ -18,7 +18,6 @@ layout = [
 
 
 @callback(
-    Output("player_question_container", "children", allow_duplicate=True),
     Input("url", "pathname"),
     prevent_initial_call=True,
 )
@@ -27,17 +26,10 @@ def player_set_connected(url: str):
         raise PreventUpdate
 
     get_game().login_player(Player(flask.request.origin, 0))
-    return (
-        dmc.Text(
-            "En attente de la première question ...",
-            size="xl",
-            c="white",  # pyright: ignore[reportArgumentType]
-        ),
-    )
 
 
 @callback(
-    Output("player_question_container", "children", allow_duplicate=True),
+    Output("player_question_container", "children"),
     Input("player_update", "n_intervals"),
     prevent_initial_call=True,
 )
@@ -50,4 +42,11 @@ def player_update_layout(_):
             game.get_answer() if game.current_validated else None,
         )
 
-    return no_update
+    else:
+        return dmc.Center(
+            dmc.Loader(
+                size="xl",
+                type="oval",
+                color="white",  # pyright: ignore[reportArgumentType]
+            ),
+        )

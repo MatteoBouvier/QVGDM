@@ -28,11 +28,51 @@ def _get_color(index: int, invalid_options: list[int] | None) -> str:
     return "darkgrey" if index in invalid_options else "white"
 
 
+def _get_option(
+    text: str,
+    index: int,
+    direction: Literal["left", "right"],
+    selected: int | None,
+    answer: int | None,
+    invalid_options: list[int] | None,
+    with_button: bool,
+) -> dmc.BackgroundImage | dmc.Button:
+    color = _get_color(index, invalid_options)
+    txt = dmc.BackgroundImage(
+        dmc.Center(
+            dmc.Text(text, c=color),  # pyright: ignore[reportArgumentType]
+            style={"height": "100%"},
+        ),
+        src=f"/assets/images/{_get_asset(direction, index, selected, answer, invalid_options)}",
+        style={"width": "552px", "height": "64px"},
+    )
+
+    if with_button:
+        return dmc.Button(
+            txt,
+            color=color,  # pyright: ignore[reportArgumentType]
+            variant="transparent",
+            disabled=invalid_options is not None and index in invalid_options,
+            id={"type": "guest_option_button", "index": index},
+            styles={
+                "root": {
+                    "padding": "0",
+                    "width": "552px",
+                    "height": "64px",
+                    "background": "transparent",
+                }
+            },
+        )
+
+    return txt
+
+
 def show_question(
     question: Question,
     selected: int | None = None,
     answer: int | None = None,
     invalid_options: list[int] | None = None,
+    with_buttons: bool = False,
 ):
     return (
         dmc.Center(
@@ -55,27 +95,23 @@ def show_question(
                     dmc.Space(h=10),
                     dmc.Group(
                         [
-                            dmc.BackgroundImage(
-                                dmc.Center(
-                                    dmc.Text(
-                                        question["options"][0],
-                                        c=_get_color(0, invalid_options),  # pyright: ignore[reportArgumentType]
-                                    ),
-                                    style={"height": "100%"},
-                                ),
-                                src=f"/assets/images/{_get_asset('left', 0, selected, answer, invalid_options)}",
-                                style={"width": "552px", "height": "64px"},
+                            _get_option(
+                                question["options"][0],
+                                0,
+                                "left",
+                                selected,
+                                answer,
+                                invalid_options,
+                                with_buttons,
                             ),
-                            dmc.BackgroundImage(
-                                dmc.Center(
-                                    dmc.Text(
-                                        question["options"][1],
-                                        c=_get_color(1, invalid_options),  # pyright: ignore[reportArgumentType]
-                                    ),
-                                    style={"height": "100%"},
-                                ),
-                                src=f"/assets/images/{_get_asset('right', 1, selected, answer, invalid_options)}",
-                                style={"width": "552px", "height": "64px"},
+                            _get_option(
+                                question["options"][1],
+                                1,
+                                "right",
+                                selected,
+                                answer,
+                                invalid_options,
+                                with_buttons,
                             ),
                         ],
                         grow=True,
@@ -85,27 +121,23 @@ def show_question(
                     dmc.Space(h=5),
                     dmc.Group(
                         [
-                            dmc.BackgroundImage(
-                                dmc.Center(
-                                    dmc.Text(
-                                        question["options"][2],
-                                        c=_get_color(2, invalid_options),  # pyright: ignore[reportArgumentType]
-                                    ),
-                                    style={"height": "100%"},
-                                ),
-                                src=f"/assets/images/{_get_asset('left', 2, selected, answer, invalid_options)}",
-                                style={"width": "552px", "height": "64px"},
+                            _get_option(
+                                question["options"][2],
+                                2,
+                                "left",
+                                selected,
+                                answer,
+                                invalid_options,
+                                with_buttons,
                             ),
-                            dmc.BackgroundImage(
-                                dmc.Center(
-                                    dmc.Text(
-                                        question["options"][3],
-                                        c=_get_color(3, invalid_options),  # pyright: ignore[reportArgumentType]
-                                    ),
-                                    style={"height": "100%"},
-                                ),
-                                src=f"/assets/images/{_get_asset('right', 3, selected, answer, invalid_options)}",
-                                style={"width": "552px", "height": "64px"},
+                            _get_option(
+                                question["options"][3],
+                                3,
+                                "right",
+                                selected,
+                                answer,
+                                invalid_options,
+                                with_buttons,
                             ),
                         ],
                         grow=True,

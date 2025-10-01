@@ -31,7 +31,7 @@ def player_set_connected(url: str):
     if url != "/game":
         raise PreventUpdate
 
-    get_game().login_player(Player(flask.request.origin, 0))
+    get_game().login_player(Player(flask.request.origin, "__RESERVED:PLAYER__"))
 
 
 @callback(

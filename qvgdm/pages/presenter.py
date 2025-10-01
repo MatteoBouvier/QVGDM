@@ -15,7 +15,6 @@ from dash.exceptions import PreventUpdate
 from dash_iconify import DashIconify
 
 from qvgdm.game import get_game
-from qvgdm.players import guests
 from qvgdm.questions import Question
 
 dash.register_page(__name__)
@@ -148,8 +147,9 @@ def show_question(question: Question) -> dmc.Stack:
     Input("presenter_check_connected_players", "n_intervals"),
 )
 def presenter_update_guest_counter(_):
-    status = "Non" if get_game().player is None else "Oui"
-    return status, len(guests)
+    game = get_game()
+    status = "Non" if game.player is None else "Oui"
+    return status, len(game.guests)
 
 
 @callback(

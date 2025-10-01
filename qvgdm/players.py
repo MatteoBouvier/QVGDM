@@ -1,10 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
 class Player:
     id: str
-    score: int
-
-
-guests: dict[str, Player] = {}
+    name: str
+    answers: dict[int, int] = field(default_factory=dict)

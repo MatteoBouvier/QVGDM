@@ -25,7 +25,10 @@ class Jokers:
 class Game:
     def __init__(self) -> None:
         self.started: bool = False
+
         self.player: Player | None = None
+        self.guests: dict[str, Player] = {}
+
         self.questions: list[Question] = load_questions()
         self.current_index: int = 0
         self.current_selected: int | None = None
@@ -48,6 +51,13 @@ class Game:
         if self.player is None:
             self.player = player
 
+    def login_guest(self, player: Player) -> bool:
+        if player.id in self.guests:
+            return False
+
+        self.guests[player.id] = player
+        return True
+
     def get_question(self) -> Question:
         return self.questions[self.current_index]
 
@@ -55,9 +65,18 @@ class Game:
         question = self.get_question()
         return question["options"].index(question["answer"])
 
+    def get_current_guest_selected(self, player_id) -> int | None:
+        return self.guests[player_id].answers.get(self.current_index)
+
     def select_answer(self, index: int) -> None:
         assert 4 > index >= 0, index
         self.current_selected = index
+
+    def select_guest_answer(self, player_id: str, index: int) -> None:
+        assert 4 > index >= 0, index
+
+        if not self.current_validated:
+            self.guests[player_id].answers[self.current_index] = index
 
     def validate_answer(self) -> None:
         assert self.current_selected is not None

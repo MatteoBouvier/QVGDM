@@ -11,6 +11,9 @@ dash.register_page(__name__)
 
 layout = [
     dmc.Space(h=50),
+    dmc.Center(
+        dmc.Text("", c="white", size="50px", id="player_joker_public_timer_display")  # pyright: ignore[reportArgumentType]
+    ),
     html.Div(id="player_question_container", style={"height": "30vh"}),
     dmc.Center(
         dmc.Group(
@@ -37,6 +40,7 @@ def player_set_connected(url: str):
     Output("player_joker_container", "children"),
     Output("score_ladder", "children", allow_duplicate=True),
     Output("public_joker_result", "children", allow_duplicate=True),
+    Output("player_joker_public_timer_display", "children"),
     Input("player_update", "n_intervals"),
     prevent_initial_call=True,
 )
@@ -57,6 +61,7 @@ def player_update_layout(_):
                 None,
                 None,
                 None,
+                None,
             )
 
         case "started":
@@ -73,6 +78,7 @@ def player_update_layout(_):
                     game.current_index,
                 ),
                 show_public_stats(game.jokers.answers),
+                game.jokers.timer,
             )
 
         case "ended":
@@ -92,5 +98,6 @@ def player_update_layout(_):
                     None if game.player is None else game.player.score,
                     game.current_index,
                 ),
+                None,
                 None,
             )

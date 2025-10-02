@@ -1,7 +1,8 @@
 import itertools as it
 from dataclasses import dataclass
 import random
-from typing import Literal
+import tomllib
+from typing import Any, Literal
 
 from dash import get_app
 
@@ -15,6 +16,7 @@ class Jokers:
     invalid_options: list[int] | None = None
 
     public: bool = True
+    timer: int | None = None
     answers: list[int] | None = None
 
     call: bool = True
@@ -22,6 +24,9 @@ class Jokers:
 
 class Game:
     def __init__(self) -> None:
+        with open("config.toml", "rb") as conf:
+            self.config: dict[str, Any] = tomllib.load(conf)["qvgdm"]
+
         self.status: Literal["waiting", "started", "ended"] = "waiting"
 
         self.player: Player | None = None
@@ -147,11 +152,14 @@ class Game:
         assert self.jokers.call
         self.jokers.call = False
 
+    def use_joker_public_set_timer(self) -> None:
+        assert self.jokers.public
+        self.jokers.timer = self.config["joker_public_timer"]
+
     def use_joker_public(self) -> list[int]:
         assert self.jokers.public
         self.jokers.public = False
-
-        # TODO: add timer
+        self.jokers.timer = None
 
         answers = [0, 0, 0, 0]
 

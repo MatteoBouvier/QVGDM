@@ -1,8 +1,8 @@
 import dash
 import dash_mantine_components as dmc
-from dash import dcc, html
+from dash import dcc, html, callback, Output, Input
 
-from qvgdm.game import Game
+from qvgdm.game import Game, get_game
 
 app = dash.Dash(
     "qvgdm",
@@ -51,6 +51,13 @@ app.layout = dmc.MantineProvider(
                 styles={"root": {"height": "100%"}},
             ),
             dcc.Location(id="url"),
+            dcc.Interval(
+                id="joker_public_timer",
+                interval=1000,
+                n_intervals=0,
+                max_intervals=60,
+                disabled=True,
+            ),
         ],
         style={"height": "100vh", "width": "100vw"},
     )

@@ -8,4 +8,9 @@
     border-radius: 70px / 20px;
 }
 
+.public-timer {
+    padding: .5rem;
+    border: 1px solid white !important;
+}
+
 /* TODO: for small screens */

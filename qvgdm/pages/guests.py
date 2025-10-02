@@ -34,6 +34,10 @@ layout = [
         ],
         id="guest_layout",
     ),
+    dmc.Center(
+        dmc.Text("", c="white", size="50px", id="guest_joker_public_timer_display")  # pyright: ignore[reportArgumentType]
+    ),
+    dmc.Space(h=20),
     html.Div(id="guest_question_container", style={"height": "30vh"}),
     dcc.Interval(id="guest_update", interval=500),
 ]
@@ -73,6 +77,7 @@ def guest_join(n: int | None, name: str):
     Output("guest_question_container", "children"),
     Output("score_ladder", "children", allow_duplicate=True),
     Output("public_joker_result", "children", allow_duplicate=True),
+    Output("guest_joker_public_timer_display", "children"),
     Input("guest_update", "n_intervals"),
     prevent_initial_call=True,
 )
@@ -94,6 +99,7 @@ def guest_update_layout(_):
                     ),
                     None,
                     None,
+                    None,
                 )
 
             case "started":
@@ -110,6 +116,7 @@ def guest_update_layout(_):
                         game.current_index,
                     ),
                     show_public_stats(game.jokers.answers),
+                    game.jokers.timer,
                 )
 
             case "ended":
@@ -127,9 +134,10 @@ def guest_update_layout(_):
                     ),
                     None,
                     None,
+                    None,
                 )
 
-    return None, None, None
+    return None, None, None, None
 
 
 @callback(Input({"type": "guest_option_button", "index": ALL}, "n_clicks"))

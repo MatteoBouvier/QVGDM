@@ -21,10 +21,12 @@ from qvgdm.render import show_public_stats
 dash.register_page(__name__)
 
 layout = [
-    dmc.Space(h=50),
     dmc.Center(
         dmc.Stack(
             [
+                dmc.Group(
+                    id="presenter_joker_public_timer_display",
+                ),
                 dmc.Group(
                     [
                         dmc.Text("Joueur connecté: ", size="xl", c="white"),  # pyright: ignore[reportArgumentType]
@@ -287,14 +289,55 @@ def presenter_use_joker_call(n: int | None):
 
 @callback(
     Output("presenter_joker_public", "disabled"),
-    Output("public_joker_result", "children", allow_duplicate=True),
+    Output("joker_public_timer", "disabled"),
+    Output("joker_public_timer", "n_intervals"),
+    Output("joker_public_timer", "max_intervals"),
     Input("presenter_joker_public", "n_clicks"),
     prevent_initial_call=True,
 )
-def presenter_use_joker_public(n: int | None):
+def presenter_use_joker_public_pre(n: int | None):
     if not n:
         raise PreventUpdate
 
-    answers = get_game().use_joker_public()
+    game = get_game()
+    game.use_joker_public_set_timer()
+    return True, False, 1, game.config["joker_public_timer"]
 
-    return True, show_public_stats(answers)
+
+@callback(
+    Output("public_joker_result", "children", allow_duplicate=True),
+    Input("joker_public_timer", "n_intervals"),
+    prevent_initial_call=True,
+)
+def presenter_user_joker_public_post(n: int):
+    game = get_game()
+
+    if n == game.config["joker_public_timer"]:
+        answers = game.use_joker_public()
+
+        return show_public_stats(answers)
+
+
+@callback(
+    Output("presenter_joker_public_timer_display", "children"),
+    Input("joker_public_timer", "n_intervals"),
+    prevent_initial_call=True,
+)
+def presenter_joker_public_timer_display(_):
+    game = get_game()
+
+    assert game.jokers.timer is not None
+    game.jokers.timer -= 1
+
+    if game.jokers.timer <= 0:
+        return None
+
+    return dmc.Center(
+        dmc.Text(
+            f"Joker(Public) temps restant : {game.jokers.timer}",
+            c="white",  # pyright: ignore[reportArgumentType]
+            size="xl",
+        ),
+        style={"width": "100%"},
+        className="public-timer",
+    )

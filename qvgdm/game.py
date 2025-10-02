@@ -40,6 +40,8 @@ class Game:
 
         self.jokers: Jokers = Jokers()
 
+        print(id(self), self.player)
+
     def start(self) -> Question | None:
         self.status = "started"
 
@@ -74,6 +76,8 @@ class Game:
                 "__RESERVED:PLAYER__",
                 [ScoreItem(question["value"]) for question in self.questions],
             )
+
+        print(id(self), "logged in")
 
     def login_guest(self, player_id: str, name: str) -> bool:
         if player_id in self.guests:

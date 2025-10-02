@@ -52,11 +52,7 @@ def player_update_layout(_):
         case "waiting":
             return (
                 dmc.Center(
-                    dmc.Loader(
-                        size="xl",
-                        type="oval",
-                        color="white",  # pyright: ignore[reportArgumentType]
-                    ),
+                    html.Img(src="/assets/QRCode.png"),
                     style={"height": "100%"},
                 ),
                 None,

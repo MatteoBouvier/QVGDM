@@ -1,8 +1,8 @@
 import dash
 import dash_mantine_components as dmc
-from dash import dcc, html, callback, Output, Input
+from dash import dcc, html
 
-from qvgdm.game import Game, get_game
+from qvgdm.game import Game
 
 app = dash.Dash(
     "qvgdm",

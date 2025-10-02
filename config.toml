@@ -1,2 +1,2 @@
 [qvgdm]
-joker_public_timer = 3  # nb of seconds
+joker_public_timer = 60  # nb of seconds

@@ -130,6 +130,7 @@ class Game:
         self.current_validated = False
 
         self.jokers.invalid_options = None
+        self.jokers.answers = None
 
         if self.current_index >= len(self.questions):
             self.status = "ended"

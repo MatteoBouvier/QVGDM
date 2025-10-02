@@ -205,6 +205,7 @@ def presenter_restart(n: int | None):
     Input({"type": "presenter_question", "index": ALL}, "n_clicks"),
     Input("presenter_next_question", "n_clicks"),
     State({"type": "presenter_question", "index": ALL}, "variant"),
+    prevent_initial_call=True,
 )
 def presenter_select_answer(n: list[int | None], _, button_variants: list[str]):
     if not any(n):
@@ -234,6 +235,7 @@ def presenter_select_answer(n: list[int | None], _, button_variants: list[str]):
 
 @callback(
     Output("presenter_question_container", "children", allow_duplicate=True),
+    Output("public_joker_result", "children"),
     Input("presenter_next_question", "n_clicks"),
     prevent_initial_call=True,
 )
@@ -257,9 +259,9 @@ def presenter_next_question(n: int | None):
                 size="lg",
             ),
             style={"height": "100%"},
-        )
+        ), None
 
-    return show_question(question)
+    return show_question(question), None
 
 
 @callback(

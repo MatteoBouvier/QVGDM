@@ -14,6 +14,7 @@ layout = [
     dmc.Center(
         dmc.Text("", c="white", size="50px", id="player_joker_public_timer_display")  # pyright: ignore[reportArgumentType]
     ),
+    dmc.Space(h=20),
     html.Div(id="player_question_container", style={"height": "30vh"}),
     dmc.Center(
         dmc.Group(
@@ -65,6 +66,8 @@ def player_update_layout(_):
             )
 
         case "started":
+            assert game.player is not None
+
             return (
                 show_question(
                     game.get_question(),
@@ -74,7 +77,7 @@ def player_update_layout(_):
                 ),
                 show_jokers(game.jokers),
                 show_score(
-                    None if game.player is None else game.player.score,
+                    game.player.score,
                     game.current_index,
                 ),
                 show_public_stats(game.jokers.answers),

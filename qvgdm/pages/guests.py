@@ -11,8 +11,7 @@ dash.register_page(__name__, path="/")
 
 
 layout = [
-    dmc.Space(h=100),
-    html.Div(id="guest_question_container", style={"height": "30vh"}),
+    dmc.Space(h=50),
     dmc.Center(
         [
             dmc.Stack(
@@ -35,6 +34,7 @@ layout = [
         ],
         id="guest_layout",
     ),
+    html.Div(id="guest_question_container", style={"height": "30vh"}),
     dcc.Interval(id="guest_update", interval=1000),
 ]
 

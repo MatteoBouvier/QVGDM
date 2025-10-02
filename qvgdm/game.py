@@ -3,14 +3,8 @@ import random
 
 from dash import get_app
 
-from qvgdm.players import Player
+from qvgdm.players import Player, ScoreItem
 from qvgdm.questions import Question, load_questions
-
-
-@dataclass
-class ScoreItem:
-    value: int
-    validated: bool
 
 
 @dataclass
@@ -36,10 +30,10 @@ class Game:
         self.current_selected: int | None = None
         self.current_validated: bool = False
 
-        self.score: dict[int, ScoreItem] = {
-            idx: ScoreItem(question["value"], False)
-            for idx, question in enumerate(self.questions)
-        }
+        # self.score: dict[int, ScoreItem] = {
+        #     idx: ScoreItem(question["value"], False)
+        #     for idx, question in enumerate(self.questions)
+        # }
 
         self.jokers: Jokers = Jokers()
 
@@ -49,15 +43,23 @@ class Game:
 
         return self.next_question()
 
-    def login_player(self, player: Player) -> None:
+    def login_player(self, player_id: str) -> None:
         if self.player is None:
-            self.player = player
+            self.player = Player(
+                player_id,
+                "__RESERVED:PLAYER__",
+                [ScoreItem(question["value"]) for question in self.questions],
+            )
 
-    def login_guest(self, player: Player) -> bool:
-        if player.id in self.guests:
+    def login_guest(self, player_id: str, name: str) -> bool:
+        if player_id in self.guests:
             return False
 
-        self.guests[player.id] = player
+        self.guests[player_id] = Player(
+            player_id,
+            name,
+            [ScoreItem(question["value"]) for question in self.questions],
+        )
         return True
 
     def get_question(self) -> Question:
@@ -67,7 +69,7 @@ class Game:
         question = self.get_question()
         return question["options"].index(question["answer"])
 
-    def get_current_guest_selected(self, player_id) -> int | None:
+    def get_current_guest_selected(self, player_id: str) -> int | None:
         return self.guests[player_id].answers.get(self.current_index)
 
     def select_answer(self, index: int) -> None:
@@ -78,15 +80,27 @@ class Game:
         assert 4 > index >= 0, index
 
         if not self.current_validated:
-            self.guests[player_id].answers[self.current_index] = index
+            guest = self.guests[player_id]
+            guest.answers[self.current_index] = index
+
+            if self.get_answer_index() == index:
+                guest.score[self.current_index].validated = True
+
+            else:
+                guest.score[self.current_index].validated = False
 
     def validate_answer(self) -> None:
         assert self.current_selected is not None
+        assert self.player is not None
+
         self.current_validated = True
 
         question = self.get_question()
         if question["options"][self.current_selected] == question["answer"]:
-            self.score[self.current_index].validated = True
+            self.player.score[self.current_index].validated = True
+
+        else:
+            self.player.score[self.current_index].validated = False
 
     def next_question(self) -> Question | None:
         self.current_index += 1

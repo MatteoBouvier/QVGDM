@@ -5,8 +5,7 @@ from dash import ALL, Input, Output, State, callback, callback_context, dcc, htm
 from dash.exceptions import PreventUpdate
 
 from qvgdm.game import get_game
-from qvgdm.players import Player
-from qvgdm.render import show_public_stats, show_question
+from qvgdm.render import show_public_stats, show_question, show_score
 
 dash.register_page(__name__, path="/")
 
@@ -66,12 +65,13 @@ def guest_join(n: int | None, name: str):
 
     # new connection success
     assert name, name
-    game.login_guest(Player(player_id, name))
+    game.login_guest(player_id, name)
     return "none"
 
 
 @callback(
     Output("guest_question_container", "children"),
+    Output("score_ladder", "children", allow_duplicate=True),
     Output("public_joker_result", "children", allow_duplicate=True),
     Input("guest_update", "n_intervals"),
     prevent_initial_call=True,
@@ -82,24 +82,35 @@ def guest_update_layout(_):
 
     if player_id in game.guests:
         if game.started:
-            return show_question(
-                game.get_question(),
-                game.get_current_guest_selected(player_id),
-                game.get_answer_index() if game.current_validated else None,
-                game.jokers.invalid_options,
-                with_buttons=True,
-            ), show_public_stats(game.jokers.answers)
+            return (
+                show_question(
+                    game.get_question(),
+                    game.get_current_guest_selected(player_id),
+                    game.get_answer_index() if game.current_validated else None,
+                    game.jokers.invalid_options,
+                    with_buttons=True,
+                ),
+                show_score(
+                    game.guests[player_id].score,
+                    game.current_index,
+                ),
+                show_public_stats(game.jokers.answers),
+            )
 
-        return dmc.Center(
-            dmc.Loader(
-                size="xl",
-                type="oval",
-                color="white",  # pyright: ignore[reportArgumentType]
+        return (
+            dmc.Center(
+                dmc.Loader(
+                    size="xl",
+                    type="oval",
+                    color="white",  # pyright: ignore[reportArgumentType]
+                ),
+                style={"height": "100%"},
             ),
-            style={"height": "100%"},
-        ), None
+            None,
+            None,
+        )
 
-    return None, None
+    return None, None, None
 
 
 @callback(Input({"type": "guest_option_button", "index": ALL}, "n_clicks"))

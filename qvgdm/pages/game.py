@@ -5,8 +5,7 @@ from dash import Input, Output, callback, dcc, html
 from dash.exceptions import PreventUpdate
 
 from qvgdm.game import get_game
-from qvgdm.players import Player
-from qvgdm.render import show_jokers, show_public_stats, show_question
+from qvgdm.render import show_jokers, show_public_stats, show_question, show_score
 
 dash.register_page(__name__)
 
@@ -30,12 +29,13 @@ def player_set_connected(url: str):
     if url != "/game":
         raise PreventUpdate
 
-    get_game().login_player(Player(flask.request.origin, "__RESERVED:PLAYER__"))
+    get_game().login_player(flask.request.origin)
 
 
 @callback(
     Output("player_question_container", "children"),
     Output("player_joker_container", "children"),
+    Output("score_ladder", "children", allow_duplicate=True),
     Output("public_joker_result", "children", allow_duplicate=True),
     Input("player_update", "n_intervals"),
     prevent_initial_call=True,
@@ -51,6 +51,9 @@ def player_update_layout(_):
                 game.jokers.invalid_options,
             ),
             show_jokers(game.jokers),
+            show_score(
+                None if game.player is None else game.player.score, game.current_index
+            ),
             show_public_stats(game.jokers.answers),
         )
 
@@ -64,6 +67,7 @@ def player_update_layout(_):
                 ),
                 style={"height": "100%"},
             ),
+            None,
             None,
             None,
         )

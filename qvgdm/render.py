@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 from dash import dcc, html
 
 from qvgdm.game import Jokers
+from qvgdm.players import ScoreItem
 from qvgdm.questions import Question
 
 
@@ -198,3 +199,42 @@ def show_public_stats(answers: list[int] | None) -> dcc.Graph | None:
         }
     )
     return dcc.Graph(figure=fig)
+
+
+def show_score(score: list[ScoreItem] | None, current: int) -> list[dmc.Group] | None:
+    if score is None:
+        return None
+
+    ladder = []
+    for idx, s in enumerate(score, start=1):
+        if idx == current + 1:
+            color = "white"
+
+        else:
+            color = (
+                "green" if s.validated else "white" if s.validated is None else "red"
+            )
+
+        ladder.append(
+            dmc.Group(
+                [
+                    dmc.Text(f"{idx}  ⏺", size="lg", c="white", ta="right"),  # pyright: ignore[reportArgumentType]
+                    dmc.Text(
+                        s.value,
+                        size="lg",
+                        c=color,  # pyright: ignore[reportArgumentType]
+                        ta="right",
+                    ),
+                    html.Img(
+                        src="/assets/images/mozzarella32.png",
+                        height=24,
+                        width=24,
+                        style={"flexGrow": "0"},
+                    ),
+                ],
+                grow=True,
+                className="ladder-selected" if idx == current + 1 else "",
+            )
+        )
+
+    return list(reversed(ladder))

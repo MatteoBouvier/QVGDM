@@ -71,7 +71,9 @@ layout = [
                 ),
                 dmc.Stack(
                     dmc.Button(
-                        "Commencer nouvelle partie", id="presenter_start_button"
+                        "Commencer nouvelle partie",
+                        id="presenter_start_button",
+                        disabled=True,
                     ),
                     id="presenter_start_button_stack",
                 ),
@@ -145,12 +147,13 @@ def show_question(question: Question) -> dmc.Stack:
 @callback(
     Output("presenter_player_status", "children"),
     Output("presenter_guest_counter", "children"),
+    Output("presenter_start_button", "disabled"),
     Input("presenter_check_connected_players", "n_intervals"),
 )
 def presenter_update_guest_counter(_):
     game = get_game()
-    status = "Non" if game.player is None else "Oui"
-    return status, len(game.guests)
+    status, disabled = ("Non", True) if game.player is None else ("Oui", False)
+    return status, len(game.guests), disabled
 
 
 @callback(

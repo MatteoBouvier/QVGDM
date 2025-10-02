@@ -30,7 +30,13 @@ app.layout = dmc.MantineProvider(
                                         src="/assets/logo.png", height=250, width=250
                                     ),
                                     html.Div(
-                                        id="score_ladder",
+                                        html.Div(
+                                            id="score_ladder",
+                                            style={
+                                                "width": "200px",
+                                                "marginLeft": "100px",
+                                            },
+                                        ),
                                         style={"width": "400px"},
                                     ),
                                 ],

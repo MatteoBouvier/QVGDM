@@ -123,14 +123,20 @@ def guest_update_layout(_):
             case "ended":
                 guest_score = game.get_guest_score(player_id)
                 total_score = game.get_total_score()
+                winners, _ = game.get_winners()
 
                 return (
                     dmc.Center(
-                        dmc.Text(
-                            f"Félicitations, vous avez obtenu la note de {guest_score}/{total_score}",
-                            c="white",  # pyright: ignore[reportArgumentType]
-                            size=50,  # pyright: ignore[reportArgumentType]
-                        ),
+                        [
+                            dmc.Text(
+                                f"Félicitations, vous avez obtenu la note de {guest_score}/{total_score}",
+                                c="white",  # pyright: ignore[reportArgumentType]
+                                size=50,  # pyright: ignore[reportArgumentType]
+                            ),
+                            dmc.Text("🎉 Vous avez gagné ! 🎉", c="green", size=50)  # pyright: ignore[reportArgumentType]
+                            if game.guests[player_id].name in winners
+                            else None,
+                        ],
                         style={"height": "100%"},
                     ),
                     None,

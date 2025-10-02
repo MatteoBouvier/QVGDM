@@ -139,8 +139,6 @@ class Game:
             self.status = "ended"
             return None
 
-        # TODO: show winner in game screen
-
         return self.questions[self.current_index]
 
     def next_option(self) -> int:

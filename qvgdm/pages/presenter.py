@@ -85,6 +85,12 @@ layout = [
                             id="presenter_next_question",
                             display="none",
                         ),
+                        dmc.Button(
+                            "Réponse suivante",
+                            leftSection=DashIconify(icon="mdi:navigate-next"),
+                            id="presenter_next_option",
+                            display="none",
+                        ),
                         dmc.Space(h=20),
                         dmc.Button(
                             "Recommencer",
@@ -102,7 +108,7 @@ layout = [
 ]
 
 
-def show_question(question: Question) -> dmc.Stack:
+def show_question(question: Question, option_nb: int) -> dmc.Stack:
     return dmc.Stack(
         [
             dmc.Text(question["question"], size="xl", c="white"),  # pyright: ignore[reportArgumentType]
@@ -116,6 +122,7 @@ def show_question(question: Question) -> dmc.Stack:
                         color="green"  # pyright: ignore[reportArgumentType]
                         if question["answer"] == question["options"][0]
                         else "white",
+                        disabled=option_nb <= 0,
                     ),
                     dmc.Button(
                         question["options"][1],
@@ -125,6 +132,7 @@ def show_question(question: Question) -> dmc.Stack:
                         color="green"  # pyright: ignore[reportArgumentType]
                         if question["answer"] == question["options"][1]
                         else "white",
+                        disabled=option_nb <= 1,
                     ),
                 ]
             ),
@@ -138,6 +146,7 @@ def show_question(question: Question) -> dmc.Stack:
                         color="green"  # pyright: ignore[reportArgumentType]
                         if question["answer"] == question["options"][2]
                         else "white",
+                        disabled=option_nb <= 2,
                     ),
                     dmc.Button(
                         question["options"][3],
@@ -147,6 +156,7 @@ def show_question(question: Question) -> dmc.Stack:
                         color="green"  # pyright: ignore[reportArgumentType]
                         if question["answer"] == question["options"][3]
                         else "white",
+                        disabled=option_nb <= 3,
                     ),
                 ]
             ),
@@ -171,21 +181,30 @@ def presenter_update_guest_counter(_):
     Output("presenter_controls", "display"),
     Output("presenter_controls_2", "display"),
     Output("presenter_question_container", "children", allow_duplicate=True),
+    Output("presenter_next_option", "display", allow_duplicate=True),
     Input("presenter_start_button", "n_clicks"),
     prevent_initial_call=True,
 )
 def presenter_start(n: int | None):
     if not n:
-        return "block", "none", "none", None
+        return "block", "none", "none", None, "none"
 
-    question = get_game().start()
+    game = get_game()
+    question = game.start()
     assert question is not None
 
-    return "none", "flex", "flex", show_question(question)
+    return (
+        "none",
+        "flex",
+        "flex",
+        show_question(question, game.current_option_nb),
+        "block",
+    )
 
 
 @callback(
     Output("presenter_question_container", "children", allow_duplicate=True),
+    Output("presenter_next_option", "display", allow_duplicate=True),
     Input("presenter_restart_button", "n_clicks"),
     prevent_initial_call=True,
 )
@@ -193,10 +212,28 @@ def presenter_restart(n: int | None):
     if not n:
         raise PreventUpdate
 
-    question = get_game().restart()
+    game = get_game()
+    question = game.restart()
     assert question is not None
 
-    return show_question(question)
+    return show_question(question, game.current_option_nb), "block"
+
+
+@callback(
+    Output("presenter_question_container", "children", allow_duplicate=True),
+    Output("presenter_next_option", "display", allow_duplicate=True),
+    Input("presenter_next_option", "n_clicks"),
+    prevent_initial_call=True,
+)
+def presenter_next_option(n: int | None):
+    if not n:
+        raise PreventUpdate
+
+    game = get_game()
+    question = game.get_question()
+    option_nb = get_game().next_option()
+
+    return show_question(question, option_nb), no_update if option_nb < 4 else "none"
 
 
 @callback(
@@ -236,6 +273,7 @@ def presenter_select_answer(n: list[int | None], _, button_variants: list[str]):
 @callback(
     Output("presenter_question_container", "children", allow_duplicate=True),
     Output("public_joker_result", "children"),
+    Output("presenter_next_option", "display", allow_duplicate=True),
     Input("presenter_next_question", "n_clicks"),
     prevent_initial_call=True,
 )
@@ -246,22 +284,24 @@ def presenter_next_question(n: int | None):
     game = get_game()
     question = game.next_question()
 
-    # TODO: question apparition "animation"
-
     if question is None:
         winners, score = game.get_winners()
         plural = "" if len(winners) == 1 else "s"
 
-        return dmc.Center(
-            dmc.Text(
-                f"Gagnant{plural}: {','.join(winners)} ({score[0]}/{score[1]})",
-                c="white",  # pyright: ignore[reportArgumentType]
-                size="lg",
+        return (
+            dmc.Center(
+                dmc.Text(
+                    f"Gagnant{plural}: {','.join(winners)} ({score[0]}/{score[1]})",
+                    c="white",  # pyright: ignore[reportArgumentType]
+                    size="lg",
+                ),
+                style={"height": "100%"},
             ),
-            style={"height": "100%"},
-        ), None
+            None,
+            "none",
+        )
 
-    return show_question(question), None
+    return show_question(question, game.current_option_nb), None, "block"
 
 
 @callback(

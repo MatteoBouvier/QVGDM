@@ -71,6 +71,7 @@ def player_update_layout(_):
             return (
                 show_question(
                     game.get_question(),
+                    game.current_option_nb,
                     game.current_selected,
                     game.get_answer_index() if game.current_validated else None,
                     game.jokers.invalid_options,

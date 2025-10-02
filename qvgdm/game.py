@@ -36,6 +36,7 @@ class Game:
         self.current_index: int = -1
         self.current_selected: int | None = None
         self.current_validated: bool = False
+        self.current_option_nb: int = 0
 
         self.jokers: Jokers = Jokers()
 
@@ -60,6 +61,7 @@ class Game:
         self.current_index = -1
         self.current_selected = None
         self.current_validated = False
+        self.current_option_nb = 0
 
         self.jokers = Jokers()
 
@@ -128,6 +130,7 @@ class Game:
         self.current_index += 1
         self.current_selected = None
         self.current_validated = False
+        self.current_option_nb = 0
 
         self.jokers.invalid_options = None
         self.jokers.answers = None
@@ -136,7 +139,15 @@ class Game:
             self.status = "ended"
             return None
 
+        # TODO: show winner in game screen
+
         return self.questions[self.current_index]
+
+    def next_option(self) -> int:
+        self.current_option_nb += 1
+        assert self.current_option_nb <= 4
+
+        return self.current_option_nb
 
     def use_joker_half(self) -> list[int]:
         assert self.jokers.half

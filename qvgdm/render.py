@@ -32,6 +32,7 @@ def _get_color(index: int, invalid_options: list[int] | None) -> str:
 
 def _get_option(
     text: str,
+    option_nb: int,
     index: int,
     direction: Literal["left", "right"],
     selected: int | None,
@@ -42,14 +43,14 @@ def _get_option(
     color = _get_color(index, invalid_options)
     txt = dmc.BackgroundImage(
         dmc.Center(
-            dmc.Text(text, c=color),  # pyright: ignore[reportArgumentType]
+            dmc.Text(text if option_nb > index else None, c=color),  # pyright: ignore[reportArgumentType]
             style={"height": "100%"},
         ),
         src=f"/assets/images/{_get_asset(direction, index, selected, answer, invalid_options)}",
         style={"width": "552px", "height": "64px"},
     )
 
-    if with_button:
+    if with_button and option_nb == 4:
         return dmc.Button(
             txt,
             color=color,  # pyright: ignore[reportArgumentType]
@@ -71,6 +72,7 @@ def _get_option(
 
 def show_question(
     question: Question,
+    option_nb: int,
     selected: int | None = None,
     answer: int | None = None,
     invalid_options: list[int] | None = None,
@@ -99,6 +101,7 @@ def show_question(
                         [
                             _get_option(
                                 question["options"][0],
+                                option_nb,
                                 0,
                                 "left",
                                 selected,
@@ -108,6 +111,7 @@ def show_question(
                             ),
                             _get_option(
                                 question["options"][1],
+                                option_nb,
                                 1,
                                 "right",
                                 selected,
@@ -125,6 +129,7 @@ def show_question(
                         [
                             _get_option(
                                 question["options"][2],
+                                option_nb,
                                 2,
                                 "left",
                                 selected,
@@ -134,6 +139,7 @@ def show_question(
                             ),
                             _get_option(
                                 question["options"][3],
+                                option_nb,
                                 3,
                                 "right",
                                 selected,

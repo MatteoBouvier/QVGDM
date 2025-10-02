@@ -17,7 +17,7 @@ layout = [
             id="player_joker_container",
         ),
     ),
-    dcc.Interval(id="player_update", interval=1000),
+    dcc.Interval(id="player_update", interval=500),
 ]
 
 

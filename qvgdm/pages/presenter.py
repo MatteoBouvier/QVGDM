@@ -88,7 +88,7 @@ layout = [
             ]
         )
     ),
-    dcc.Interval(id="presenter_check_connected_players", interval=1000),
+    dcc.Interval(id="presenter_check_connected_players", interval=500),
 ]
 
 
@@ -215,7 +215,6 @@ def presenter_next_question(n: int | None):
     question = game.next_question()
 
     # TODO: question apparition "animation"
-    # TODO: reduire interval
 
     if question is None:
         winners, score = game.get_winners()

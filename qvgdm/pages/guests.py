@@ -35,7 +35,7 @@ layout = [
         id="guest_layout",
     ),
     html.Div(id="guest_question_container", style={"height": "30vh"}),
-    dcc.Interval(id="guest_update", interval=1000),
+    dcc.Interval(id="guest_update", interval=500),
 ]
 
 

@@ -177,9 +177,9 @@ def presenter_update_guest_counter(_):
 
 
 @callback(
-    Output("presenter_start_button", "display"),
-    Output("presenter_controls", "display"),
-    Output("presenter_controls_2", "display"),
+    Output("presenter_start_button", "display", allow_duplicate=True),
+    Output("presenter_controls", "display", allow_duplicate=True),
+    Output("presenter_controls_2", "display", allow_duplicate=True),
     Output("presenter_question_container", "children", allow_duplicate=True),
     Output("presenter_next_option", "display", allow_duplicate=True),
     Input("presenter_start_button", "n_clicks"),
@@ -203,6 +203,9 @@ def presenter_start(n: int | None):
 
 
 @callback(
+    Output("presenter_start_button", "display", allow_duplicate=True),
+    Output("presenter_controls", "display", allow_duplicate=True),
+    Output("presenter_controls_2", "display", allow_duplicate=True),
     Output("presenter_question_container", "children", allow_duplicate=True),
     Output("presenter_next_option", "display", allow_duplicate=True),
     Input("presenter_restart_button", "n_clicks"),
@@ -212,11 +215,8 @@ def presenter_restart(n: int | None):
     if not n:
         raise PreventUpdate
 
-    game = get_game()
-    question = game.restart()
-    assert question is not None
-
-    return show_question(question, game.current_option_nb), "block"
+    get_game().restart()
+    return "block", "none", "none", None, "none"
 
 
 @callback(

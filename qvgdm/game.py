@@ -45,18 +45,11 @@ class Game:
 
         return self.next_question()
 
-    def restart(self) -> Question | None:
-        self.status = "started"
+    def restart(self) -> None:
+        self.status = "waiting"
 
-        if self.player is not None:
-            self.player.score = [
-                ScoreItem(question["value"]) for question in self.questions
-            ]
-            self.player.answers = {}
-
-        for guest in self.guests.values():
-            guest.score = [ScoreItem(question["value"]) for question in self.questions]
-            guest.answers = {}
+        self.player = None
+        self.guests = {}
 
         self.current_index = -1
         self.current_selected = None
@@ -64,8 +57,6 @@ class Game:
         self.current_option_nb = 0
 
         self.jokers = Jokers()
-
-        return self.next_question()
 
     def login_player(self, player_id: str) -> None:
         if self.player is None:

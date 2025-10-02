@@ -29,14 +29,11 @@ app.layout = dmc.MantineProvider(
                                     html.Img(
                                         src="/assets/logo.png", height=250, width=250
                                     ),
+                                    html.Div(
+                                        id="score_ladder",
+                                        style={"width": "400px"},
+                                    ),
                                 ]
-                            ),
-                            dmc.Center(
-                                dmc.Text(
-                                    "Qui veut gagner des mozzas",
-                                    size="40px",  # pyright: ignore[reportArgumentType]
-                                    c="white",  # pyright: ignore[reportArgumentType]
-                                )
                             ),
                             dash.page_container,
                         ],

@@ -77,9 +77,9 @@ def guest_join(n: int | None, name: str):
 )
 def guest_update_layout(_):
     game = get_game()
-    if game.started:
-        player_id = flask.request.origin
+    player_id = flask.request.origin
 
+    if game.started:
         return show_question(
             game.get_question(),
             game.get_current_guest_selected(player_id),
@@ -88,13 +88,14 @@ def guest_update_layout(_):
             with_buttons=True,
         )
 
-    else:
+    elif player_id in game.guests:
         return dmc.Center(
             dmc.Loader(
                 size="xl",
                 type="oval",
                 color="white",  # pyright: ignore[reportArgumentType]
-            )
+            ),
+            style={"height": "100%"},
         )
 
 

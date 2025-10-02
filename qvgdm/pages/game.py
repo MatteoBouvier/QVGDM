@@ -57,4 +57,5 @@ def player_update_layout(_):
                 type="oval",
                 color="white",  # pyright: ignore[reportArgumentType]
             ),
+            style={"height": "100%"},
         ), None

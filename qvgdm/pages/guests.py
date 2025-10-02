@@ -6,14 +6,14 @@ from dash.exceptions import PreventUpdate
 
 from qvgdm.game import get_game
 from qvgdm.players import Player
-from qvgdm.render import show_question
+from qvgdm.render import show_public_stats, show_question
 
 dash.register_page(__name__, path="/")
 
 
 layout = [
-    dmc.Space(h=50),
-    html.Div(id="guest_question_container", style={"height": "30vh", "width": "80vw"}),
+    dmc.Space(h=100),
+    html.Div(id="guest_question_container", style={"height": "30vh"}),
     dmc.Center(
         [
             dmc.Stack(
@@ -72,6 +72,7 @@ def guest_join(n: int | None, name: str):
 
 @callback(
     Output("guest_question_container", "children"),
+    Output("public_joker_result", "children", allow_duplicate=True),
     Input("guest_update", "n_intervals"),
     prevent_initial_call=True,
 )
@@ -79,16 +80,16 @@ def guest_update_layout(_):
     game = get_game()
     player_id = flask.request.origin
 
-    if game.started:
-        return show_question(
-            game.get_question(),
-            game.get_current_guest_selected(player_id),
-            game.get_answer_index() if game.current_validated else None,
-            game.jokers.invalid_options,
-            with_buttons=True,
-        )
+    if player_id in game.guests:
+        if game.started:
+            return show_question(
+                game.get_question(),
+                game.get_current_guest_selected(player_id),
+                game.get_answer_index() if game.current_validated else None,
+                game.jokers.invalid_options,
+                with_buttons=True,
+            ), show_public_stats(game.jokers.answers)
 
-    elif player_id in game.guests:
         return dmc.Center(
             dmc.Loader(
                 size="xl",
@@ -96,7 +97,9 @@ def guest_update_layout(_):
                 color="white",  # pyright: ignore[reportArgumentType]
             ),
             style={"height": "100%"},
-        )
+        ), None
+
+    return None, None
 
 
 @callback(Input({"type": "guest_option_button", "index": ALL}, "n_clicks"))

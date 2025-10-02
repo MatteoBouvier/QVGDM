@@ -16,10 +16,12 @@ class ScoreItem:
 @dataclass
 class Jokers:
     half: bool = True
-    call: bool = True
-    public: bool = True
-
     invalid_options: list[int] | None = None
+
+    public: bool = True
+    answers: list[int] | None = None
+
+    call: bool = True
 
 
 class Game:
@@ -120,13 +122,19 @@ class Game:
         # TODO: add timer
 
         answers = [0, 0, 0, 0]
+
         for guest in self.guests.values():
             guest_ans = guest.answers.get(self.current_index)
             if guest_ans is not None:
                 answers[guest_ans] += 1
 
         total_answers = sum(answers)
-        return [int(nb / total_answers * 100) for nb in answers]
+
+        if total_answers > 0:
+            answers = [int(nb / total_answers * 100) for nb in answers]
+
+        self.jokers.answers = answers
+        return answers
 
 
 def get_game() -> Game:

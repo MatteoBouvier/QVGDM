@@ -1,7 +1,8 @@
 from typing import Literal
 
 import dash_mantine_components as dmc
-from dash import html
+import plotly.graph_objects as go
+from dash import dcc, html
 
 from qvgdm.game import Jokers
 from qvgdm.questions import Question
@@ -151,7 +152,7 @@ def show_question(
     )
 
 
-def show_jokers(jokers: Jokers):
+def show_jokers(jokers: Jokers) -> list[html.Img]:
     return [
         html.Img(
             src=f"/assets/images/joker/{'' if jokers.half else 'no_'}50_50.svg",
@@ -166,3 +167,34 @@ def show_jokers(jokers: Jokers):
             style={"height": "320px", "width": "196px"},
         ),
     ]
+
+
+def show_public_stats(answers: list[int] | None) -> dcc.Graph | None:
+    if answers is None:
+        return None
+
+    fig = go.Figure(
+        data=[
+            go.Bar(
+                x=["A", "B", "C", "D"],
+                y=answers,
+                width=[1, 1, 1, 1],
+                marker_color=["blue", "green", "red", "yellow"],
+            )
+        ]
+    )
+    fig.update_layout(
+        {
+            "plot_bgcolor": "black",
+            "paper_bgcolor": "rgba(0, 0, 0, 0)",
+            "xaxis": {"color": "white"},
+            "yaxis": {
+                "color": "white",
+                "tickmode": "array",
+                "tickvals": [0, 20, 40, 60, 80, 100],
+                "ticktext": ["0%", "20%", "40%", "60%", "80%", "100%"],
+            },
+            "font": {"size": 30},
+        }
+    )
+    return dcc.Graph(figure=fig)

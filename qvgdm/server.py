@@ -33,7 +33,8 @@ app.layout = dmc.MantineProvider(
                                         id="score_ladder",
                                         style={"width": "400px"},
                                     ),
-                                ]
+                                ],
+                                style={"height": "400px"},
                             ),
                             dash.page_container,
                         ],

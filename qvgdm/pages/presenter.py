@@ -1,5 +1,4 @@
 import dash
-import plotly.graph_objects as go
 import dash_mantine_components as dmc
 from dash import (
     ALL,
@@ -17,11 +16,12 @@ from dash_iconify import DashIconify
 
 from qvgdm.game import get_game
 from qvgdm.questions import Question
+from qvgdm.render import show_public_stats
 
 dash.register_page(__name__)
 
 layout = [
-    dmc.Space(h=100),
+    dmc.Space(h=50),
     dmc.Center(
         dmc.Stack(
             [
@@ -245,8 +245,9 @@ def presenter_use_joker_call(n: int | None):
 
 @callback(
     Output("presenter_joker_public", "disabled"),
-    Output("public_joker_result", "children"),
+    Output("public_joker_result", "children", allow_duplicate=True),
     Input("presenter_joker_public", "n_clicks"),
+    prevent_initial_call=True,
 )
 def presenter_use_joker_public(n: int | None):
     if not n:
@@ -254,23 +255,4 @@ def presenter_use_joker_public(n: int | None):
 
     answers = get_game().use_joker_public()
 
-    fig = go.Figure(
-        data=[
-            go.Bar(
-                x=["A", "B", "C", "D"],
-                y=answers,
-                width=[1, 1, 1, 1],
-                marker_color=["blue", "green", "red", "yellow"],
-            )
-        ]
-    )
-    fig.update_layout(
-        {
-            "plot_bgcolor": "black",
-            "paper_bgcolor": "rgba(0, 0, 0, 0)",
-            "xaxis": {"color": "white"},
-            "yaxis": {"color": "white"},
-            "font": {"size": 30},
-        }
-    )
-    return True, dcc.Graph(figure=fig)
+    return True, show_public_stats(answers)

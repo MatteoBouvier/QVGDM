@@ -69,22 +69,30 @@ layout = [
                     id="presenter_controls",
                     display="none",
                 ),
-                dmc.Stack(
-                    dmc.Button(
-                        "Commencer nouvelle partie",
-                        id="presenter_start_button",
-                        disabled=True,
-                    ),
-                    id="presenter_start_button_stack",
+                dmc.Button(
+                    "Commencer nouvelle partie",
+                    id="presenter_start_button",
+                    disabled=True,
                 ),
                 html.Div(id="presenter_question_container"),
-                dmc.Button(
-                    "Question suivante",
-                    leftSection=DashIconify(icon="mdi:navigate-next"),
-                    id="presenter_next_question",
+                dmc.Stack(
+                    [
+                        dmc.Button(
+                            "Question suivante",
+                            leftSection=DashIconify(icon="mdi:navigate-next"),
+                            id="presenter_next_question",
+                            display="none",
+                        ),
+                        dmc.Space(h=20),
+                        dmc.Button(
+                            "Recommencer",
+                            leftSection=DashIconify(icon="typcn:arrow-loop"),
+                            id="presenter_restart_button",
+                        ),
+                    ],
+                    id="presenter_controls_2",
                     display="none",
                 ),
-                dmc.Space(h=20),
             ]
         )
     ),
@@ -157,34 +165,54 @@ def presenter_update_guest_counter(_):
 
 
 @callback(
-    Output("presenter_start_button_stack", "display"),
+    Output("presenter_start_button", "display"),
     Output("presenter_controls", "display"),
+    Output("presenter_controls_2", "display"),
     Output("presenter_question_container", "children", allow_duplicate=True),
     Input("presenter_start_button", "n_clicks"),
     prevent_initial_call=True,
 )
 def presenter_start(n: int | None):
     if not n:
-        return "block", "none", None
+        return "block", "none", "none", None
 
     question = get_game().start()
     assert question is not None
 
-    return "none", "flex", show_question(question)
+    return "none", "flex", "flex", show_question(question)
+
+
+@callback(
+    Output("presenter_question_container", "children", allow_duplicate=True),
+    Input("presenter_restart_button", "n_clicks"),
+    prevent_initial_call=True,
+)
+def presenter_restart(n: int | None):
+    if not n:
+        raise PreventUpdate
+
+    question = get_game().restart()
+    assert question is not None
+
+    return show_question(question)
 
 
 @callback(
     Output({"type": "presenter_question", "index": ALL}, "variant"),
     Output("presenter_next_question", "display"),
     Input({"type": "presenter_question", "index": ALL}, "n_clicks"),
+    Input("presenter_next_question", "n_clicks"),
     State({"type": "presenter_question", "index": ALL}, "variant"),
 )
-def presenter_select_answer(n: list[int | None], button_variants: list[str]):
+def presenter_select_answer(n: list[int | None], _, button_variants: list[str]):
     if not any(n):
         raise PreventUpdate
 
     if not callback_context.triggered_id:
         return [], "none"
+
+    if callback_context.triggered_id == "presenter_next_question":
+        return [no_update] * 4, "none"
 
     index = callback_context.triggered_id["index"]
     game = get_game()

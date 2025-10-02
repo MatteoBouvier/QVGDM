@@ -28,7 +28,7 @@ class Game:
         self.guests: dict[str, Player] = {}
 
         self.questions: list[Question] = load_questions()
-        self.current_index: int = 0
+        self.current_index: int = -1
         self.current_selected: int | None = None
         self.current_validated: bool = False
 
@@ -36,7 +36,27 @@ class Game:
 
     def start(self) -> Question | None:
         self.status = "started"
+
+        return self.next_question()
+
+    def restart(self) -> Question | None:
+        self.status = "started"
+
+        if self.player is not None:
+            self.player.score = [
+                ScoreItem(question["value"]) for question in self.questions
+            ]
+            self.player.answers = {}
+
+        for guest in self.guests.values():
+            guest.score = [ScoreItem(question["value"]) for question in self.questions]
+            guest.answers = {}
+
         self.current_index = -1
+        self.current_selected = None
+        self.current_validated = False
+
+        self.jokers = Jokers()
 
         return self.next_question()
 
@@ -170,10 +190,6 @@ class Game:
         total_score = self.get_total_score()
 
         return [b[0] for b in best_names], (best_score, total_score)
-
-    def restart(self) -> None:
-        # TODO: restart button, at any time
-        return
 
 
 def get_game() -> Game:

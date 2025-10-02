@@ -42,32 +42,55 @@ def player_set_connected(url: str):
 )
 def player_update_layout(_):
     game = get_game()
-    if game.started:
-        return (
-            show_question(
-                game.get_question(),
-                game.current_selected,
-                game.get_answer_index() if game.current_validated else None,
-                game.jokers.invalid_options,
-            ),
-            show_jokers(game.jokers),
-            show_score(
-                None if game.player is None else game.player.score, game.current_index
-            ),
-            show_public_stats(game.jokers.answers),
-        )
 
-    else:
-        return (
-            dmc.Center(
-                dmc.Loader(
-                    size="xl",
-                    type="oval",
-                    color="white",  # pyright: ignore[reportArgumentType]
+    match game.status:
+        case "waiting":
+            return (
+                dmc.Center(
+                    dmc.Loader(
+                        size="xl",
+                        type="oval",
+                        color="white",  # pyright: ignore[reportArgumentType]
+                    ),
+                    style={"height": "100%"},
                 ),
-                style={"height": "100%"},
-            ),
-            None,
-            None,
-            None,
-        )
+                None,
+                None,
+                None,
+            )
+
+        case "started":
+            return (
+                show_question(
+                    game.get_question(),
+                    game.current_selected,
+                    game.get_answer_index() if game.current_validated else None,
+                    game.jokers.invalid_options,
+                ),
+                show_jokers(game.jokers),
+                show_score(
+                    None if game.player is None else game.player.score,
+                    game.current_index,
+                ),
+                show_public_stats(game.jokers.answers),
+            )
+
+        case "ended":
+            score = game.get_player_score()
+
+            return (
+                dmc.Center(
+                    dmc.Text(
+                        f"Félicitations, vous avez gagné {score} mozzas",
+                        c="white",  # pyright: ignore[reportArgumentType]
+                        size=50,  # pyright: ignore[reportArgumentType]
+                    ),
+                    style={"height": "100%"},
+                ),
+                None,
+                show_score(
+                    None if game.player is None else game.player.score,
+                    game.current_index,
+                ),
+                None,
+            )

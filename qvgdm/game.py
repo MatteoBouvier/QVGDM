@@ -1,5 +1,7 @@
+import itertools as it
 from dataclasses import dataclass
 import random
+from typing import Literal
 
 from dash import get_app
 
@@ -20,7 +22,7 @@ class Jokers:
 
 class Game:
     def __init__(self) -> None:
-        self.started: bool = False
+        self.status: Literal["waiting", "started", "ended"] = "waiting"
 
         self.player: Player | None = None
         self.guests: dict[str, Player] = {}
@@ -30,15 +32,10 @@ class Game:
         self.current_selected: int | None = None
         self.current_validated: bool = False
 
-        # self.score: dict[int, ScoreItem] = {
-        #     idx: ScoreItem(question["value"], False)
-        #     for idx, question in enumerate(self.questions)
-        # }
-
         self.jokers: Jokers = Jokers()
 
     def start(self) -> Question | None:
-        self.started = True
+        self.status = "started"
         self.current_index = -1
 
         return self.next_question()
@@ -110,6 +107,7 @@ class Game:
         self.jokers.invalid_options = None
 
         if self.current_index >= len(self.questions):
+            self.status = "ended"
             return None
 
         return self.questions[self.current_index]
@@ -149,6 +147,33 @@ class Game:
 
         self.jokers.answers = answers
         return answers
+
+    def get_player_score(self) -> int:
+        assert self.player is not None
+        return sum(bool(s.validated) * s.value for s in self.player.score)
+
+    def get_guest_score(self, player_id: str) -> int:
+        guest = self.guests[player_id]
+        return sum(bool(s.validated) * s.value for s in guest.score)
+
+    def get_total_score(self) -> int:
+        return sum(q["value"] for q in self.questions)
+
+    def get_winners(self) -> tuple[list[str], tuple[int, int]]:
+        scores = [
+            (guest.name, self.get_guest_score(guest.id))
+            for guest in self.guests.values()
+        ]
+        best_score, best_names = next(
+            it.groupby(sorted(scores, key=lambda s: s[1], reverse=True), lambda e: e[1])
+        )
+        total_score = self.get_total_score()
+
+        return [b[0] for b in best_names], (best_score, total_score)
+
+    def restart(self) -> None:
+        # TODO: restart button, at any time
+        return
 
 
 def get_game() -> Game:

@@ -81,34 +81,53 @@ def guest_update_layout(_):
     player_id = flask.request.origin
 
     if player_id in game.guests:
-        if game.started:
-            return (
-                show_question(
-                    game.get_question(),
-                    game.get_current_guest_selected(player_id),
-                    game.get_answer_index() if game.current_validated else None,
-                    game.jokers.invalid_options,
-                    with_buttons=True,
-                ),
-                show_score(
-                    game.guests[player_id].score,
-                    game.current_index,
-                ),
-                show_public_stats(game.jokers.answers),
-            )
+        match game.status:
+            case "waiting":
+                return (
+                    dmc.Center(
+                        dmc.Loader(
+                            size="xl",
+                            type="oval",
+                            color="white",  # pyright: ignore[reportArgumentType]
+                        ),
+                        style={"height": "100%"},
+                    ),
+                    None,
+                    None,
+                )
 
-        return (
-            dmc.Center(
-                dmc.Loader(
-                    size="xl",
-                    type="oval",
-                    color="white",  # pyright: ignore[reportArgumentType]
-                ),
-                style={"height": "100%"},
-            ),
-            None,
-            None,
-        )
+            case "started":
+                return (
+                    show_question(
+                        game.get_question(),
+                        game.get_current_guest_selected(player_id),
+                        game.get_answer_index() if game.current_validated else None,
+                        game.jokers.invalid_options,
+                        with_buttons=True,
+                    ),
+                    show_score(
+                        game.guests[player_id].score,
+                        game.current_index,
+                    ),
+                    show_public_stats(game.jokers.answers),
+                )
+
+            case "ended":
+                guest_score = game.get_guest_score(player_id)
+                total_score = game.get_total_score()
+
+                return (
+                    dmc.Center(
+                        dmc.Text(
+                            f"Félicitations, vous avez obtenu la note de {guest_score}/{total_score}",
+                            c="white",  # pyright: ignore[reportArgumentType]
+                            size=50,  # pyright: ignore[reportArgumentType]
+                        ),
+                        style={"height": "100%"},
+                    ),
+                    None,
+                    None,
+                )
 
     return None, None, None
 

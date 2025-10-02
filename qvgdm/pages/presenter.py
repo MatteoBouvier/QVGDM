@@ -211,12 +211,24 @@ def presenter_next_question(n: int | None):
     if not n:
         raise PreventUpdate
 
-    question = get_game().next_question()
+    game = get_game()
+    question = game.next_question()
+
+    # TODO: question apparition "animation"
+    # TODO: reduire interval
 
     if question is None:
-        # TODO:
-        print("fin")
-        return
+        winners, score = game.get_winners()
+        plural = "" if len(winners) == 1 else "s"
+
+        return dmc.Center(
+            dmc.Text(
+                f"Gagnant{plural}: {','.join(winners)} ({score[0]}/{score[1]})",
+                c="white",  # pyright: ignore[reportArgumentType]
+                size="lg",
+            ),
+            style={"height": "100%"},
+        )
 
     return show_question(question)
 

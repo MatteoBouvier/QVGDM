@@ -285,13 +285,13 @@ def presenter_next_question(n: int | None):
     question = game.next_question()
 
     if question is None:
-        winners, score = game.get_winners()
-        plural = "" if len(winners) == 1 else "s"
-
+        # winners, score = game.get_winners()
+        # plural = "" if len(winners) == 1 else "s"
+        #
         return (
             dmc.Center(
                 dmc.Text(
-                    f"Gagnant{plural}: {','.join(winners)} ({score[0]}/{score[1]})",
+                    # f"Gagnant{plural}: {','.join(winners)} ({score[0]}/{score[1]})",
                     c="white",  # pyright: ignore[reportArgumentType]
                     size="lg",
                 ),

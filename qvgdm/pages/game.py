@@ -87,20 +87,20 @@ def player_update_layout(_):
 
         case "ended":
             score = game.get_player_score()
-            winners, _ = game.get_winners()
+            # winners, _ = game.get_winners()
 
             return (
                 dmc.Center(
                     dmc.Stack(
                         [
                             dmc.Text(
-                                f"Félicitations, vous avez gagné {score} mozzas",
+                                f"Félicitations, vous avez gagné {score} mozzas !",
                                 c="white",  # pyright: ignore[reportArgumentType]
                                 size=50,  # pyright: ignore[reportArgumentType]
                             ),
-                            dmc.Text(
-                                f"Dans le public, {' & '.join(winners)} {'a' if len(winners) == 1 else 'ont'} le mieux répondu"
-                            ),
+                            # dmc.Text(
+                            #     f"Dans le public, {' & '.join(winners)} {'a' if len(winners) == 1 else 'ont'} le mieux répondu"
+                            # ),
                         ]
                     ),
                     style={"height": "100%"},

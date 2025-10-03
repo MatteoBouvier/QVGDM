@@ -1,114 +1,114 @@
 {
     "questions": [
         {
-            "question": "question #1",
+            "question": "Q/ Quelle est la couleur préférée de Charlène ?",
             "options": [
-                "réponse A",
-                "réponse B",
-                "réponse C",
-                "réponse D"
+                "terracotta",
+                "rose poudré",
+                "lavande",
+                "vert sauge"
             ],
-            "answer": "réponse C",
+            "answer": "lavande",
             "value": 1
         },
         {
-            "question": "question #2",
+            "question": "C/ Quel trait de personnalité Quentin préfère-t-il chez Charlène ?",
             "options": [
-                "réponse A",
-                "réponse B",
-                "réponse C",
-                "réponse D"
+                "son agilité",
+                "sa minutie",
+                "sa Bernitude",
+                "sa gentillesse"
             ],
-            "answer": "réponse A",
+            "answer": "sa Bernitude",
+            "value": 1
+        },
+        {
+            "question": "Q/ Quel est le nom du doudou de Charlène ?",
+            "options": [
+                "Serra",
+                "Relacha",
+                "Empoigna",
+                "Attrapa"
+            ],
+            "answer": "Serra",
             "value": 2
         },
         {
-            "question": "question #3",
+            "question": "C/ Quel film rappelle Charlène à Quentin ?",
             "options": [
-                "réponse A",
-                "réponse B",
-                "réponse C",
-                "réponse D"
+                "Eté automne hiver printemps... et été",
+                "Printemps été automne hiver... et printemps",
+                "Automne hiver printemps été... et automne",
+                "Hiver printemps été automne... et hiver"
             ],
-            "answer": "réponse A",
+            "answer": "Printemps été automne hiver... et printemps",
+            "value": 2
+        },
+        {
+            "question": "Q/ Selon Charlène, quel personnage de roman ressemble le plus à Quentin ?",
+            "options": [
+                "Gollum",
+                "Tom Bombadil",
+                "Sam Gamegie",
+                "Aragorn"
+            ],
+            "answer": "Aragorn",
             "value": 5
         },
         {
-            "question": "question #4",
+            "question": "C/ Quel est le fruit préféré de Quentin ?",
             "options": [
-                "réponse A",
-                "réponse B",
-                "réponse C",
-                "réponse D"
+                "la mangue",
+                "les litchis",
+                "l'ananas",
+                "Oh oula c'est compliqué, je sais pas, pleins ?"
             ],
-            "answer": "réponse A",
+            "answer": "Oh oula c'est compliqué, je sais pas, pleins ?",
+            "value": 5
+        },
+        {
+            "question": "Q/ D'après Charlène, si ils étaient une chanson, ils seraient ...",
+            "options": [
+                "Year Zero (Ghost)",
+                "Starman (Bowie)",
+                "Rock and Roll All Night (Kiss)",
+                "Guinnevere (Crosby, Stills, Nash & Young)"
+            ],
+            "answer": "Guinnevere (Crosby, Stills, Nash & Young)",
             "value": 10
         },
         {
-            "question": "question #5",
+            "question": "C/ Quel est le nom du lycée de Quentin ?",
             "options": [
-                "réponse A",
-                "réponse B",
-                "réponse C",
-                "réponse D"
+                "Saint Charles",
+                "Saint Denis",
+                "Saint Pierre",
+                "Saint Maxime"
             ],
-            "answer": "réponse A",
+            "answer": "Saint Charles",
+            "value": 10
+        },
+        {
+            "question": "Q/ Charlène est née un beau jour, c'était le ...",
+            "options": [
+                "13 mars à 12h20",
+                "13 mars à 15h50",
+                "13 mars à 01h10",
+                "13 mars à 23h23"
+            ],
+            "answer": "13 mars à 15h50",
             "value": 15
         },
         {
-            "question": "question #6",
+            "question": "C/ Comment dit-on \"je t'aime\" en créole reunionnais ?",
             "options": [
-                "réponse A",
-                "réponse B",
-                "réponse C",
-                "réponse D"
+                "Mi ama ti",
+                "Mi aim a u",
+                "Aim a ti",
+                "Ji aime all of u"
             ],
-            "answer": "réponse A",
-            "value": 20
-        },
-        {
-            "question": "question #7",
-            "options": [
-                "réponse A",
-                "réponse B",
-                "réponse C",
-                "réponse D"
-            ],
-            "answer": "réponse A",
-            "value": 25
-        },
-        {
-            "question": "question #8",
-            "options": [
-                "réponse A",
-                "réponse B",
-                "réponse C",
-                "réponse D"
-            ],
-            "answer": "réponse A",
-            "value": 30
-        },
-        {
-            "question": "question #9",
-            "options": [
-                "réponse A",
-                "réponse B",
-                "réponse C",
-                "réponse D"
-            ],
-            "answer": "réponse A",
-            "value": 40
-        },
-        {
-            "question": "question #10",
-            "options": [
-                "réponse A",
-                "réponse B",
-                "réponse C",
-                "réponse D"
-            ],
-            "answer": "réponse A",
-            "value": 50
+            "answer": "Mi aim a u",
+            "value": 15
         }
     ]
 }

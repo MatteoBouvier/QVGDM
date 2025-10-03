@@ -15,8 +15,10 @@ def load_questions() -> list[Question]:
 
     questions = cast(list[Question], data["questions"])
 
-    for question in questions:
-        assert question["answer"] in question["options"]
+    for i, question in enumerate(questions, start=1):
+        assert question["answer"] in question["options"], (
+            f"at question #{i}, {question['answer']} not in options"
+        )
         assert isinstance(question["value"], int)
 
     return questions

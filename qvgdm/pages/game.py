@@ -15,6 +15,7 @@ layout = [
     ),
     dmc.Space(h=20),
     html.Div(id="player_question_container", style={"height": "30vh"}),
+    dmc.Space(h=50),
     dmc.Center(
         dmc.Group(
             id="player_joker_container",
@@ -51,8 +52,12 @@ def player_update_layout(_):
         case "waiting":
             return (
                 dmc.Center(
-                    html.Img(src="/assets/QRCode.png"),
-                    style={"height": "100%", "marginTop": "20vh"},
+                    dmc.Loader(
+                        size="xl",
+                        type="oval",
+                        color="white",  # pyright: ignore[reportArgumentType]
+                    ),
+                    style={"height": "100%", "marginTop": "5%"},
                 ),
                 None,
                 None,

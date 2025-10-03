@@ -41,7 +41,12 @@ def _get_option(
     with_button: bool,
 ) -> dmc.BackgroundImage | dmc.Button:
     color = _get_color(index, invalid_options)
-    txt = (dmc.Text(text if option_nb > index else None, c=color),)  # pyright: ignore[reportArgumentType]
+    txt = dmc.Text(
+        f"{('A: ', 'B: ', 'C: ', 'D: ')[index]}{text}" if option_nb > index else None,
+        c=color,  # pyright: ignore[reportArgumentType]
+        size="25px",  # pyright: ignore[reportArgumentType]
+        style={"width": "25vw"},
+    )
 
     if with_button:
         return dmc.Button(
@@ -65,10 +70,15 @@ def _get_option(
         return dmc.BackgroundImage(
             dmc.Center(
                 txt,
-                style={"height": "100%"},
+                style={"height": "100%", "float": "left"},
+                className=f"{direction}-option",
             ),
             src=f"/assets/images/{_get_asset(direction, index, selected, answer, invalid_options)}",
-            style={"width": "552px", "height": "64px"},
+            style={
+                "width": "40vw",
+                "height": "5vw",
+                "aspectRatio": "0.12",
+            },
         )
 
 
@@ -95,67 +105,71 @@ def show_question(
                                 style={"height": "100%"},
                             ),
                             src="/assets/images/question_main.svg",
-                            style={"width": "1083px", "height": "118px"},
+                            style={"width": "80vw", "height": "9vw"},
                             id="question_main",
                         )
                     ),
                     dmc.Space(h=10),
-                    dmc.Group(
-                        [
-                            _get_option(
-                                question["options"][0],
-                                option_nb,
-                                0,
-                                "left",
-                                selected,
-                                answer,
-                                invalid_options,
-                                with_buttons,
-                            ),
-                            _get_option(
-                                question["options"][1],
-                                option_nb,
-                                1,
-                                "right",
-                                selected,
-                                answer,
-                                invalid_options,
-                                with_buttons,
-                            ),
-                        ],
-                        grow=True,
-                        styles={"root": {"width": "100%"}},
-                        gap=0,
-                        className="toggleable-group",
+                    dmc.Center(
+                        dmc.Group(
+                            [
+                                _get_option(
+                                    question["options"][0],
+                                    option_nb,
+                                    0,
+                                    "left",
+                                    selected,
+                                    answer,
+                                    invalid_options,
+                                    with_buttons,
+                                ),
+                                _get_option(
+                                    question["options"][1],
+                                    option_nb,
+                                    1,
+                                    "right",
+                                    selected,
+                                    answer,
+                                    invalid_options,
+                                    with_buttons,
+                                ),
+                            ],
+                            grow=True,
+                            styles={"root": {"width": "80vw"}},
+                            gap=0,
+                            className="toggleable-group",
+                        )
                     ),
                     dmc.Space(h=5),
-                    dmc.Group(
-                        [
-                            _get_option(
-                                question["options"][2],
-                                option_nb,
-                                2,
-                                "left",
-                                selected,
-                                answer,
-                                invalid_options,
-                                with_buttons,
-                            ),
-                            _get_option(
-                                question["options"][3],
-                                option_nb,
-                                3,
-                                "right",
-                                selected,
-                                answer,
-                                invalid_options,
-                                with_buttons,
-                            ),
-                        ],
-                        grow=True,
-                        styles={"root": {"width": "100%"}},
-                        gap=0,
-                        className="toggleable-group",
+                    dmc.Center(
+                        dmc.Group(
+                            [
+                                _get_option(
+                                    question["options"][2],
+                                    option_nb,
+                                    2,
+                                    "left",
+                                    selected,
+                                    answer,
+                                    invalid_options,
+                                    with_buttons,
+                                ),
+                                _get_option(
+                                    question["options"][3],
+                                    option_nb,
+                                    3,
+                                    "right",
+                                    selected,
+                                    answer,
+                                    invalid_options,
+                                    with_buttons,
+                                ),
+                            ],
+                            grow=True,
+                            styles={"root": {"width": "80vw"}},
+                            gap=0,
+                            className="toggleable-group",
+                        ),
                     ),
                 ],
                 styles={"root": {"width": "100%"}},
@@ -229,18 +243,18 @@ def show_score(score: list[ScoreItem] | None, current: int) -> list[dmc.Group] |
         ladder.append(
             dmc.Group(
                 [
-                    dmc.Text(f"{idx}  ⏺", size="lg", c="white", ta="right"),  # pyright: ignore[reportArgumentType]
+                    dmc.Text(f"{idx}  ⏺", size="2rem", c="white", ta="right"),  # pyright: ignore[reportArgumentType]
                     dmc.Text(
-                        s.value,
-                        size="lg",
+                        f"{s.value}  ",
+                        size="2rem",  # pyright: ignore[reportArgumentType]
                         c=color,  # pyright: ignore[reportArgumentType]
                         ta="right",
                     ),
                     html.Img(
                         src="/assets/images/mozzarella32.png",
-                        height=24,
-                        width=24,
-                        style={"flexGrow": "0"},
+                        height=32,
+                        width=32,
+                        style={"flexGrow": "0", "marginLeft": "0.5rem"},
                     ),
                 ],
                 grow=True,

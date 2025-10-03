@@ -79,6 +79,51 @@ layout = [
                 html.Div(id="presenter_question_container"),
                 dmc.Stack(
                     [
+                        dmc.Group(
+                            [
+                                dmc.NumberInput(
+                                    id={
+                                        "type": "presenter_joker_public_answer",
+                                        "index": 0,
+                                    },
+                                    value=0,
+                                ),
+                                dmc.NumberInput(
+                                    id={
+                                        "type": "presenter_joker_public_answer",
+                                        "index": 1,
+                                    },
+                                    value=0,
+                                ),
+                            ]
+                        ),
+                        dmc.Group(
+                            [
+                                dmc.NumberInput(
+                                    id={
+                                        "type": "presenter_joker_public_answer",
+                                        "index": 2,
+                                    },
+                                    value=0,
+                                ),
+                                dmc.NumberInput(
+                                    id={
+                                        "type": "presenter_joker_public_answer",
+                                        "index": 3,
+                                    },
+                                    value=0,
+                                ),
+                            ]
+                        ),
+                        dmc.Button(
+                            "Valider", id="presenter_joker_public_submit_button"
+                        ),
+                    ],
+                    id="presenter_joker_public_container",
+                    display="none",
+                ),
+                dmc.Stack(
+                    [
                         dmc.Button(
                             "Question suivante",
                             leftSection=DashIconify(icon="mdi:navigate-next"),
@@ -307,6 +352,7 @@ def presenter_next_question(n: int | None):
 @callback(
     Output("presenter_joker_half", "disabled"),
     Output({"type": "presenter_question", "index": ALL}, "disabled"),
+    Output("presenter_joker_half", "n_clicks"),
     Input("presenter_joker_half", "n_clicks"),
 )
 def presenter_use_joker_half(n: int | None):
@@ -314,7 +360,7 @@ def presenter_use_joker_half(n: int | None):
         raise PreventUpdate
 
     invalid_options_indices = get_game().use_joker_half()
-    return True, [True if i in invalid_options_indices else False for i in range(4)]
+    return True, [True if i in invalid_options_indices else False for i in range(4)], 0
 
 
 @callback(
@@ -331,9 +377,10 @@ def presenter_use_joker_call(n: int | None):
 
 @callback(
     Output("presenter_joker_public", "disabled"),
-    Output("joker_public_timer", "disabled"),
-    Output("joker_public_timer", "n_intervals"),
-    Output("joker_public_timer", "max_intervals"),
+    # Output("joker_public_timer", "disabled"),
+    # Output("joker_public_timer", "n_intervals"),
+    # Output("joker_public_timer", "max_intervals"),
+    Output("presenter_joker_public_container", "display", allow_duplicate=True),
     Input("presenter_joker_public", "n_clicks"),
     prevent_initial_call=True,
 )
@@ -341,23 +388,33 @@ def presenter_use_joker_public_pre(n: int | None):
     if not n:
         raise PreventUpdate
 
-    game = get_game()
-    game.use_joker_public_set_timer()
-    return True, False, 1, game.config["joker_public_timer"]
+    # game = get_game()
+
+    return True, "block"
+    # game.use_joker_public_set_timer()
+    # return True, False, 1, game.config["joker_public_timer"]
 
 
 @callback(
     Output("public_joker_result", "children", allow_duplicate=True),
-    Input("joker_public_timer", "n_intervals"),
+    Output("presenter_joker_public_container", "display", allow_duplicate=True),
+    # Input("joker_public_timer", "n_intervals"),
+    Input("presenter_joker_public_submit_button", "n_clicks"),
+    State({"type": "presenter_joker_public_answer", "index": ALL}, "value"),
     prevent_initial_call=True,
 )
-def presenter_user_joker_public_post(n: int):
-    game = get_game()
+def presenter_user_joker_public_post(n: int | None, answers: list[int]):
+    if not n:
+        raise PreventUpdate
 
-    if n == game.config["joker_public_timer"]:
-        answers = game.use_joker_public()
+    return show_public_stats(get_game().use_joker_public(answers)), "none"
 
-        return show_public_stats(answers)
+    # game = get_game()
+    #
+    # if n == game.config["joker_public_timer"]:
+    #     answers = game.use_joker_public(answers)
+    #
+    #     return show_public_stats(answers)
 
 
 @callback(

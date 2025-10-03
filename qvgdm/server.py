@@ -17,36 +17,38 @@ app.layout = dmc.MantineProvider(
     html.Div(
         [
             dmc.BackgroundImage(
-                dmc.Center(
-                    dmc.Stack(
+                [
+                    dmc.Center(
                         [
-                            dmc.Center(
-                                [
-                                    html.Div(
-                                        id="public_joker_result",
-                                        style={"width": "400px"},
-                                    ),
-                                    html.Img(
-                                        src="/assets/logo.png", height=250, width=250
-                                    ),
-                                    html.Div(
-                                        html.Div(
-                                            id="score_ladder",
-                                            style={
-                                                "width": "200px",
-                                                "marginLeft": "100px",
-                                            },
-                                        ),
-                                        style={"width": "400px"},
-                                    ),
-                                ],
-                                style={"height": "400px"},
+                            html.Div(
+                                id="public_joker_result",
+                                style={"width": "33%"},
                             ),
-                            dash.page_container,
+                            html.Img(
+                                src="/assets/logo.png",
+                                width="33%",
+                                id="logo",
+                            ),
+                            html.Div(
+                                html.Div(
+                                    id="score_ladder",
+                                    style={
+                                        "width": "80%",
+                                        "marginLeft": "10%",
+                                    },
+                                ),
+                                style={"width": "33%"},
+                            ),
                         ],
+                        style={"height": "25%", "width": "100%"},
                     ),
-                    style={"height": "100%", "width": "100%"},
-                ),
+                    dmc.Space(h=20),
+                    html.Div(
+                        dash.page_container,
+                        style={"height": "75%", "width": "100%"},
+                        id="page_container_wrapper",
+                    ),
+                ],
                 src="/assets/background.jpg",
                 styles={"root": {"height": "100%"}},
             ),

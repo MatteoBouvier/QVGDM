@@ -11,12 +11,16 @@ dash.register_page(__name__, path="/")
 
 
 layout = [
-    dmc.Space(h=50),
+    # dmc.Space(h=50),
     dmc.Center(
         [
             dmc.Stack(
                 [
-                    dmc.TextInput(placeholder="votre nom ...", id="guest_name"),
+                    dmc.TextInput(
+                        placeholder="votre nom ...",
+                        id="guest_name",
+                        style={"marginTop": "50%"},
+                    ),
                     dmc.Space(h=10),
                     dmc.Button(
                         "Rejoindre la partie",
@@ -28,11 +32,12 @@ layout = [
                         disabled=True,
                     ),
                 ],
-                style={"width": "50%"},
+                style={"width": "80%"},
                 id="guest_layout_logged_out",
             ),
         ],
         id="guest_layout",
+        style={"width": "100%"},
     ),
     dmc.Center(
         dmc.Text("", c="white", size="50px", id="guest_joker_public_timer_display")  # pyright: ignore[reportArgumentType]

@@ -13,4 +13,47 @@
     border: 1px solid white !important;
 }
 
-/* TODO: for small screens */
+#page_container_wrapper>div {
+    height: 100%
+}
+
+#_pages_content {
+    height: 100%;
+}
+
+#logo {
+    aspect-ratio: 1;
+    max-height: 20vh;
+    max-width: 20vh;
+}
+
+@media (max-width: 500px) {
+    #logo {
+        height: 100px;
+        width: 100px;
+    }
+
+    #score_ladder>div>p {
+        font-size: 0.7rem !important;
+    }
+
+    #score_ladder>div>img {
+        height: 16px !important;
+        width: 16px !important;
+    }
+
+    #question_main {
+        width: 90vw !important;
+        height: 10vw !important;
+    }
+
+    .toggleable-group {
+        flex-direction: column !important;
+        gap: 0;
+
+        &>div {
+            width: 100vw !important;
+            height: 10vw !important;
+        }
+    }
+}

@@ -41,21 +41,15 @@ def _get_option(
     with_button: bool,
 ) -> dmc.BackgroundImage | dmc.Button:
     color = _get_color(index, invalid_options)
-    txt = dmc.BackgroundImage(
-        dmc.Center(
-            dmc.Text(text if option_nb > index else None, c=color),  # pyright: ignore[reportArgumentType]
-            style={"height": "100%"},
-        ),
-        src=f"/assets/images/{_get_asset(direction, index, selected, answer, invalid_options)}",
-        style={"width": "552px", "height": "64px"},
-    )
+    txt = (dmc.Text(text if option_nb > index else None, c=color),)  # pyright: ignore[reportArgumentType]
 
-    if with_button and option_nb == 4:
+    if with_button:
         return dmc.Button(
             txt,
             color=color,  # pyright: ignore[reportArgumentType]
-            variant="transparent",
-            disabled=invalid_options is not None and index in invalid_options,
+            variant="outline",
+            disabled=option_nb != 4
+            or (invalid_options is not None and index in invalid_options),
             id={"type": "guest_option_button", "index": index},
             styles={
                 "root": {
@@ -67,7 +61,15 @@ def _get_option(
             },
         )
 
-    return txt
+    else:
+        return dmc.BackgroundImage(
+            dmc.Center(
+                txt,
+                style={"height": "100%"},
+            ),
+            src=f"/assets/images/{_get_asset(direction, index, selected, answer, invalid_options)}",
+            style={"width": "552px", "height": "64px"},
+        )
 
 
 def show_question(
@@ -94,6 +96,7 @@ def show_question(
                             ),
                             src="/assets/images/question_main.svg",
                             style={"width": "1083px", "height": "118px"},
+                            id="question_main",
                         )
                     ),
                     dmc.Space(h=10),
@@ -123,6 +126,7 @@ def show_question(
                         grow=True,
                         styles={"root": {"width": "100%"}},
                         gap=0,
+                        className="toggleable-group",
                     ),
                     dmc.Space(h=5),
                     dmc.Group(
@@ -151,6 +155,7 @@ def show_question(
                         grow=True,
                         styles={"root": {"width": "100%"}},
                         gap=0,
+                        className="toggleable-group",
                     ),
                 ],
                 styles={"root": {"width": "100%"}},
@@ -239,6 +244,7 @@ def show_score(score: list[ScoreItem] | None, current: int) -> list[dmc.Group] |
                     ),
                 ],
                 grow=True,
+                gap=0,
                 className="ladder-selected" if idx == current + 1 else "",
             )
         )

@@ -10,7 +10,6 @@ from qvgdm.render import show_jokers, show_public_stats, show_question, show_sco
 dash.register_page(__name__)
 
 layout = [
-    dmc.Space(h=50),
     dmc.Center(
         dmc.Text("", c="white", size="50px", id="player_joker_public_timer_display")  # pyright: ignore[reportArgumentType]
     ),
@@ -53,7 +52,7 @@ def player_update_layout(_):
             return (
                 dmc.Center(
                     html.Img(src="/assets/QRCode.png"),
-                    style={"height": "100%"},
+                    style={"height": "100%", "marginTop": "20vh"},
                 ),
                 None,
                 None,

@@ -100,12 +100,12 @@
             "value": 15
         },
         {
-            "question": "C/ Comment dit-on \"je t'aime\" en créole reunionnais ?",
+            "question": "C/ Comment dit-on \"je t'aime\" en créole ?",
             "options": [
-                "Mi ama ti",
+                "Mon kèr bat pou ou",
                 "Mi aim a u",
-                "Aim a ti",
-                "Ji aime all of u"
+                "Mi aim chouchou",
+                "L'amour lé dou"
             ],
             "answer": "Mi aim a u",
             "value": 15

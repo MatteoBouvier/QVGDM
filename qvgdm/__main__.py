@@ -1,3 +1,4 @@
 from qvgdm.server import app
 
-app.run(debug=True, dev_tools_ui=True, dev_tools_hot_reload=True)
+DEBUG = False
+app.run(debug=DEBUG, dev_tools_ui=DEBUG, dev_tools_hot_reload=DEBUG)
